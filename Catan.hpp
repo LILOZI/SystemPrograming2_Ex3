@@ -23,7 +23,7 @@ namespace catan
     #define POINTS_TO_WIN 10
     #define MAX_PLAYERS 3
 
-    enum
+    enum 
     {
         BRICK,
         WOOD,
@@ -40,7 +40,7 @@ namespace catan
             int current_player;
             vector<Player*> players;
             vector<Land*> board;
-            vector<Card*> devCardsDeck;
+            // vector<Card*> devCardsDeck;
             map<int, vector<Land*>> landNum; // "equivalence classes" of lands with the same number
 
         /**
@@ -72,14 +72,14 @@ namespace catan
         **/
         void setVxsAndEdges();
 
-
         /** 
          * @brief Roll 2 fair dices, return the sum.
         **/
         int rollDice();
 
-        public:
+        int getLandIndex(Land* land);
 
+        public:
             Catan(Player &player1, Player &player2, Player &player3);
             // Catan();
             
@@ -109,11 +109,15 @@ namespace catan
             **/
             Player* isGameOver();
 
+            
+            /** 
+            * @brief Only for testing purposes.
+            **/
+            vector<Land*> getBoard() { return this->board; }
 
-
-            bool placeSettlement(Player &player, int x, int y);
-            bool placeCity(Player &player, int x, int y);
-            bool placeRoad(Player &player, int x, int y);
+            bool placeSettlement(Player &player, size_t vertexNumber);
+            bool placeCity(Player &player, size_t vertexNumber);
+            bool placeRoad(Player &player, size_t edgeNumber);
 
             void displayBoard();
 

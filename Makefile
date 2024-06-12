@@ -1,16 +1,18 @@
 # @author: oz.atar@msmail.ariel.ac.il
 
 CXX = clang++
-CXXFLAGS = -std=c++11 -Werror -Wsign-conversion
+CXXFLAGS = -std=c++11 -Wsign-conversion -g
 SOURCEOBJ = Catan.o Player.o Land.o LandVertex.o main.o LandEdge.o
-
+TESTOBJ = Test.o TestCounter.o Catan.o Player.o Land.o LandVertex.o LandEdge.o
+VALGRIND_FLAGS=-v --leak-check=full --show-leak-kinds=all  --error-exitcode=99
 
 all: Catan
 
+test: $(TESTOBJ) 
+	$(CXX) $(CXXFLAGS) $(TESTOBJ) -o test
 
 Catan: $(SOURCEOBJ)
 	$(CXX) $(CXXFLAGS) $(SOURCEOBJ) -o Catan
-
 
 Catan.o : Catan.cpp Catan.hpp
 	$(CXX) $(CXXFLAGS) -c Catan.cpp
@@ -30,7 +32,15 @@ LandEdge.o : LandEdge.cpp LandEdge.hpp
 main.o: main.cpp
 	$(CXX) $(CXXFLAGS) -c main.cpp
 
+valgrind: Catan
+	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./Catan 2>&1 | { egrep "lost| at " || true; }
+# valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test 2>&1 | { egrep "lost| at " || true; }
 
+TestCounter.o: TestCounter.cpp 
+	$(CXX) $(CXXFLAGS) -c TestCounter.cpp
+
+Test.o: Test.cpp
+	$(CXX) $(CXXFLAGS) -c Test.cpp
 
 # Cards.o : Cards.cpp Cards.hpp
 # 	$(CXX) $(CXXFLAGS) -c Cards.cpp

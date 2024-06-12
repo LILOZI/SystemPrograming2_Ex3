@@ -35,26 +35,19 @@ namespace catan
             Player() {};
             Player(std::string name, int color) : name(name), color(color), 
             victoryPoints(0), resources{0}
-            {};
-            // Player(std::string name, int color)
-            // {
-            //     this->name = name;
-            //     this->color = color;
-            //     this->victoryPoints = 0;
-            //     for (int i = 0; i < 5; i++)
-            //         this->resources[i] = 0;
-            // }
-            
+            {};        
             ~Player() {};
             
-
-
             /**
              *@brief overloaded assignment operator 
             **/
             Player& operator=(const Player& other);
 
-            void addResource(int resourceType, int amount);
+            void addVictoryPoints(int points) { this->victoryPoints += points; };
+
+            void placeSettlement(bool isCity, size_t vertexId);
+
+            void addResource(int resourceType, int amount) { this->resources[resourceType] += amount; };
             void removeResource(int resourceType, int amount);
             /**
              * @brief Get the amount of a resource a player holds. 
@@ -78,9 +71,9 @@ namespace catan
             **/
             string getName() {
                 if (this->name.empty()){throw std::invalid_argument("Player not initialized");}
-                return this->name;}
+                return this->name + this->getColor();}
 
-
+            string getColor() const;
 
             bool operator==(const Player& other) const;
             bool operator!=(const Player& other) const;

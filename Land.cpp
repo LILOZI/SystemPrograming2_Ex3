@@ -1,7 +1,7 @@
 // @author oz.atar@msmail.ariel.ac.il
 
 #include "Land.hpp"
-
+#include <iostream>
 catan::Land::Land()
 {
     this->id = 0;
@@ -12,7 +12,64 @@ catan::Land::Land(int id) : id(id), resource(""), vertices(6), edges(5)
 {
 }
 
+catan::Land::~Land()
+{
+    for (size_t i = 0; i < this->vertices.size(); i++)
+    {   
+        if(this->vertices[i] != nullptr){delete this->vertices[i];}
+    }
+    for (size_t i = 0; i < this->edges.size(); i++)
+    {
+        if(this->edges[i] != nullptr){delete this->edges[i];}
+    }
+};
 
+catan::Land::Land(const Land& other)
+{
+    this->id = other.id;
+    for(size_t i = 0; i< 5; i++)
+    {
+        this->resource[i] = other.resource[i];
+    }
+    for(size_t i = 0; i < other.vertices.size(); i++)
+    {
+        this->vertices.push_back(new LandVertex(*other.vertices[i]));
+    }
+    for(size_t i = 0; i < other.edges.size(); i++)
+    {
+        this->edges.push_back(new LandEdge(*other.edges[i]));
+    }
+}
+
+catan::Land& catan::Land::operator=(const Land& other)
+{
+    if(this == &other)
+    {
+        return *this;
+    }
+    this->id = other.id;
+    for(size_t i = 0; i< 5; i++)
+    {
+        this->resource[i] = other.resource[i];
+    }
+    for(size_t i = 0; i < this->vertices.size(); i++)
+    {
+        if(this->vertices[i] != nullptr){delete this->vertices[i];}
+    }
+    for(size_t i = 0; i < this->edges.size(); i++)
+    {
+        if(this->edges[i] != nullptr){delete this->edges[i];}
+    }
+    for(size_t i = 0; i < other.vertices.size(); i++)
+    {
+        this->vertices.push_back(new LandVertex(*other.vertices[i]));
+    }
+    for(size_t i = 0; i < other.edges.size(); i++)
+    {
+        this->edges.push_back(new LandEdge(*other.edges[i]));
+    }
+    return *this;
+}
 
 void catan::Land::setResource(int resourceType)
 {
@@ -60,7 +117,7 @@ void catan::Land::setEdges(LandEdge* edge0, LandEdge* edge1, LandEdge* edge2, La
     this->edges[5] = edge5;
 }
 
-string catan::Land::getLandSynbol() const {
+string catan::Land::getLandSymbol() const {
     if (this->resource == "WOOD") {
         return "🌲";
     } else if (this->resource == "BRICK") {
@@ -76,4 +133,33 @@ string catan::Land::getLandSynbol() const {
     } else {
         return " ";
     }
+}
+
+size_t catan::Land::getResourceNum() const
+{
+    if(this->resource == "BRICK")
+    {
+        return 0;
+    }
+    else if(this->resource == "WOOD")
+    {
+        return 1;
+    }
+    else if(this->resource == "WHEAT")
+    {
+        return 2;
+    }
+    else if(this->resource == "SHEEP")
+    {
+        return 3;
+    }
+    else if(this->resource == "IRON")
+    {
+        return 4;
+    }
+    else if(this->resource == "DESERT")
+    {
+        return 5;
+    }
+    return 6;
 }

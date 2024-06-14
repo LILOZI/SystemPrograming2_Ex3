@@ -8,20 +8,12 @@ catan::Land::Land()
     this->resource = "";
 }   
 
-catan::Land::Land(int id) : id(id), resource(""), vertices(6), edges(5)
+catan::Land::Land(int id) : id(id), resource(""), vertices(6), edges(6)
 {
 }
 
 catan::Land::~Land()
 {
-    for (size_t i = 0; i < this->vertices.size(); i++)
-    {   
-        if(this->vertices[i] != nullptr){delete this->vertices[i];}
-    }
-    for (size_t i = 0; i < this->edges.size(); i++)
-    {
-        if(this->edges[i] != nullptr){delete this->edges[i];}
-    }
 };
 
 catan::Land::Land(const Land& other)
@@ -33,11 +25,11 @@ catan::Land::Land(const Land& other)
     }
     for(size_t i = 0; i < other.vertices.size(); i++)
     {
-        this->vertices.push_back(new LandVertex(*other.vertices[i]));
+        this->vertices.push_back(other.vertices[i]);
     }
     for(size_t i = 0; i < other.edges.size(); i++)
     {
-        this->edges.push_back(new LandEdge(*other.edges[i]));
+        this->edges.push_back(other.edges[i]);
     }
 }
 
@@ -52,21 +44,21 @@ catan::Land& catan::Land::operator=(const Land& other)
     {
         this->resource[i] = other.resource[i];
     }
-    for(size_t i = 0; i < this->vertices.size(); i++)
-    {
-        if(this->vertices[i] != nullptr){delete this->vertices[i];}
-    }
-    for(size_t i = 0; i < this->edges.size(); i++)
-    {
-        if(this->edges[i] != nullptr){delete this->edges[i];}
-    }
+    // for(size_t i = 0; i < this->vertices.size(); i++)
+    // {
+        // if(this->vertices[i] != nullptr){delete this->vertices[i];}
+    // }
+    // for(size_t i = 0; i < this->edges.size(); i++)
+    // {
+        // if(this->edges[i] != nullptr){delete this->edges[i];}
+    // }
     for(size_t i = 0; i < other.vertices.size(); i++)
     {
-        this->vertices.push_back(new LandVertex(*other.vertices[i]));
+        this->vertices.push_back(other.vertices[i]);
     }
     for(size_t i = 0; i < other.edges.size(); i++)
     {
-        this->edges.push_back(new LandEdge(*other.edges[i]));
+        this->edges.push_back(other.edges[i]);
     }
     return *this;
 }

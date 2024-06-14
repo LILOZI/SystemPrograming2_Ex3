@@ -9,24 +9,7 @@ catan::LandVertex::LandVertex(int id) : id(id), owner(nullptr), isSettlement(fal
 }
 
 catan::LandVertex::~LandVertex()
-{
-        for (size_t i = 0; i < this->neighbors.size(); i++)
-        {
-            if (this->neighbors[i] != nullptr)
-            {
-                delete this->neighbors[i];
-            }
-        }
-        for (size_t i = 0; i < this->incidentEdges.size(); i++)
-        {
-            if (this->incidentEdges[i] != nullptr)
-            {
-                delete this->incidentEdges[i];
-            }
-        }   
-    
-    // this->neighbors.clear();
-    // this->incidentEdges.clear();
+{   
 }
 
 catan::LandVertex::LandVertex(const LandVertex& other)
@@ -53,14 +36,14 @@ catan::LandVertex& catan::LandVertex::operator=(const LandVertex& other)
     this->id = other.id;
     this->owner = other.owner;
     this->isSettlement = other.isSettlement;
-    for(size_t i = 0; i < this->neighbors.size(); i++)
-    {
-        if(this->neighbors[i] != nullptr){delete this->neighbors[i];}
-    }
-    for(size_t i = 0; i < this->incidentEdges.size(); i++)
-    {
-        if(this->incidentEdges[i] != nullptr){delete this->incidentEdges[i];}
-    }
+    // for(size_t i = 0; i < this->neighbors.size(); i++)
+    // {
+        // if(this->neighbors[i] != nullptr){delete this->neighbors[i];}
+    // }
+    // for(size_t i = 0; i < this->incidentEdges.size(); i++)
+    // {
+        // if(this->incidentEdges[i] != nullptr){delete this->incidentEdges[i];}
+    // }
     this->neighbors.clear();
     this->incidentEdges.clear();
     for(size_t i = 0; i < other.neighbors.size(); i++)

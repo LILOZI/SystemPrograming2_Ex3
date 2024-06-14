@@ -20,15 +20,20 @@ namespace catan
         private:
             int id;
             string resource;
-            vector<LandVertex*> vertices;
-            vector<LandEdge*> edges;
+            
         
         public:
             Land();
             ~Land();
 
+            vector<LandVertex*> vertices;
+            vector<LandEdge*> edges;
+
             Land(const Land& other);
             Land(int id);
+
+            void setVertex(LandVertex* ptr, size_t i) { this->vertices[i] = ptr;}
+            void setEdge(LandEdge* edge, size_t i) { this->edges[i] = edge; }
 
             Land& operator=(const Land& other);
             void setResource(int resourceType);

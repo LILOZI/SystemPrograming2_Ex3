@@ -10,6 +10,8 @@
 #include <stdexcept>
 using std::vector;
 using std::string;
+using std::cout;
+using std::endl;
 
 class Card;
 
@@ -36,7 +38,7 @@ namespace catan
             Player(std::string name, int color) : name(name), color(color), 
             victoryPoints(0), resources{0}
             {};        
-            ~Player() {};
+            ~Player();
             
             /**
              *@brief overloaded assignment operator 

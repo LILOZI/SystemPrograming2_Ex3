@@ -4,10 +4,16 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <set>
+#include <utility>
 using std::vector;
 using std::map;
 using std::cout;
 using std::endl;
+using std::set;
+using std::pair;
+
+#include <algorithm>
 
 #include <ctime>
 
@@ -79,14 +85,16 @@ namespace catan
 
         int getLandIndex(Land* land);
 
+        void beforeDestroy();
+
         public:
             Catan(Player &player1, Player &player2, Player &player3);
             // Catan();
             
             // copy constructor, assignment operator, destructor - rule of three
-            Catan(const Catan &other);
+            // Catan(const Catan &other);
             ~Catan();
-            Catan& operator=(const Catan &other);
+            // Catan& operator=(const Catan &other);
 
             /** 
              * @brief Start the game.
@@ -109,7 +117,6 @@ namespace catan
             **/
             Player* isGameOver();
 
-            
             /** 
             * @brief Only for testing purposes.
             **/

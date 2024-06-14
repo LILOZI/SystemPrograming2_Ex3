@@ -15,13 +15,6 @@ catan::LandEdge::LandEdge(int id) : id(id), owner(nullptr), adjEdges(4), vertice
 
 catan::LandEdge::~LandEdge()
 {
-    // this->adjEdges.clear();
-    if(this->vertices.first != nullptr){delete this->vertices.first;}
-    if(this->vertices.second != nullptr){delete this->vertices.second;}
-    for(size_t i = 0; i < this->adjEdges.size(); i++)
-    {
-        if(this->adjEdges[i] != nullptr){delete this->adjEdges[i];}
-    }
 }
 
 catan::LandEdge::LandEdge(const LandEdge& other)
@@ -38,18 +31,19 @@ catan::LandEdge::LandEdge(const LandEdge& other)
 
 catan::LandEdge& catan::LandEdge::operator=(const LandEdge& other)
 {
-    if(this == &other)
-    {
-        return *this;
-    }
+    // if(this == &other)
+    // {
+    //     return *this;
+    // }
     this->id = other.id;
     this->owner = other.owner;
     this->vertices.first = other.vertices.first;
     this->vertices.second = other.vertices.second;
-    for(size_t i = 0; i < this->adjEdges.size(); i++)
-    {
-        if(this->adjEdges[i] != nullptr){delete this->adjEdges[i];}
-    }
+    // for(size_t i = 0; i < this->adjEdges.size(); i++)
+    // {
+        // if(this->adjEdges[i] != nullptr){delete this->adjEdges[i];}
+    // }
+    this->adjEdges.clear();
     for(size_t i = 0; i < other.adjEdges.size(); i++)
     {
         this->adjEdges.push_back(other.adjEdges[i]);

@@ -17,6 +17,10 @@ string catan::Player::getColor() const
     }
 }
 
+catan::Player::~Player()
+{
+}
+
 void catan::Player::placeSettlement(bool isCity, size_t vertexId)
 {
     if(isCity)

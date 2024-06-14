@@ -5,7 +5,6 @@
 
 catan::LandVertex::LandVertex(int id) : id(id), owner(nullptr), isSettlement(false), neighbors(3), incidentEdges(3)
 {
-    // cout << id << endl;
 }
 
 catan::LandVertex::~LandVertex()

@@ -32,8 +32,8 @@ namespace catan
             Land(const Land& other);
             Land(int id);
 
-            void setVertex(LandVertex* ptr, size_t i) { this->vertices[i] = ptr;}
-            void setEdge(LandEdge* edge, size_t i) { this->edges[i] = edge; }
+            void setVertex(size_t i, LandVertex* ptr) { this->vertices[i] = ptr;}
+            void setEdge(size_t i, LandEdge* ptr) { this->edges[i] = ptr; }
 
             Land& operator=(const Land& other);
             void setResource(int resourceType);

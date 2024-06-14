@@ -37,6 +37,9 @@ namespace catan
 
             LandVertex& operator=(const LandVertex& other);
             
+            void clearNeighbors() { this->neighbors.clear();}; 
+            void clearIncidentEdges() { this->incidentEdges.clear();};
+
             void addNeighbors(LandVertex* vertex0, LandVertex* vertex1, LandVertex* vertex2);
             void addIncidentEdges(LandEdge* edge0, LandEdge* edge1, LandEdge* edge2);
             void setOwner(Player* owner) { this->owner = owner; };

@@ -85,8 +85,6 @@ namespace catan
 
         int getLandIndex(Land* land);
 
-        void beforeDestroy();
-
         public:
             Catan(Player &player1, Player &player2, Player &player3);
             // Catan();

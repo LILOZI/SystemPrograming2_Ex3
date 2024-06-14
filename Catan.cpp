@@ -55,57 +55,33 @@ catan::Catan::Catan(Player &player1, Player &player2, Player &player3)
 
 catan::Catan::~Catan()
 {
-    vector<LandVertex*> vertices;
-    vector<LandEdge*> edges;
+    set<LandVertex*> vertices;
+    set<LandEdge*> edges;
     for(size_t i = 0; i < 19; i++)
     {
         for(size_t j = 0; j < 6; j++)
         {
-            this->board[i]->getVertex(j)->setOwner(nullptr);
-            if(std::find(vertices.begin(), vertices.end(), this->board[i]->getVertex(j)) == vertices.end())
+            auto insertAns = vertices.insert(this->board[i]->getVertex(j));
+            if(!insertAns.second)
             {
-                vertices.push_back(board[i]->getVertex(j));
+                this->board[i]->setVertex(j, nullptr); 
             }
         }
         for(size_t j = 0; j < 6; j++)
         {
-            this->board[i]->getVertex(j)->setOwner(nullptr);
-            if(std::find(edges.begin(), edges.end(), this->board[i]->getEdge(j)) == edges.end())
+            auto insertAns = edges.insert(board[i]->getEdge(j));
+            if(!insertAns.second)
             {
-                edges.push_back(board[i]->getEdge(j));
+                this->board[i]->setEdge(j, nullptr);
             }
         }
     }
-    cout << vertices.size() << endl;
-    cout << edges.size() << endl;
-    for(size_t i = 0; i < vertices.size(); i++)
-    {
-        delete vertices[i];
-    }
-    for(size_t i = 0; i < edges.size(); i++)
-    {
-        delete edges[i];
-    }
     for(size_t i = 0; i < 19; i++)
     {
-        this->board[i]->vertices.clear();
-        this->board[i]->edges.clear();
         delete board[i];
     }
-    // for( auto& pair: landNum)
-    // {
-    //     pair.second.clear();
-    // }
 }
 
-void catan::Catan::beforeDestroy()
-{
-    // for(size_t i = 0; i < 19; i++)
-    // {
-    //     std::set
-    // }
-
-}
 
 void catan::Catan::init()
 {

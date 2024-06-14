@@ -14,6 +14,25 @@ catan::Land::Land(int id) : id(id), resource(""), vertices(6), edges(6)
 
 catan::Land::~Land()
 {
+    for(size_t i = 0; i < this->vertices.size(); i++)
+    {
+        if(this->vertices[i] != nullptr)
+        {
+            this->vertices[i]->clearIncidentEdges();
+            this->vertices[i]->clearNeighbors();
+            delete this->vertices[i];
+        }
+    }
+    for(size_t i = 0; i < this->edges.size(); i++)
+    {
+        if(this->edges[i] != nullptr)
+        {   
+            
+            this->edges[i]->clearVertices();
+            this->edges[i]->clearAdjEdges();
+            delete this->edges[i];
+        }
+    }
 };
 
 catan::Land::Land(const Land& other)

@@ -32,6 +32,9 @@ namespace catan
             Player* owner;
             LandEdge(int id);
 
+            void clearAdjEdges() { this->adjEdges = vector<LandEdge*>(4);};
+            void clearVertices() { this->vertices = std::make_pair(nullptr, nullptr);};
+
             LandEdge(const LandEdge& other);
             LandEdge& operator=(const LandEdge& other);
 

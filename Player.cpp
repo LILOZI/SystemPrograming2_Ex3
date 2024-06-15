@@ -55,7 +55,7 @@ int catan::Player::placeSettlement(Catan* game, bool round0)
         cin >> vertexIndex;
         if(vertexIndex < 0 || vertexIndex > 5)
         {
-            if(landNum == 102)
+            if(vertexIndex == 102)
             {
                 if(round0)
                 {
@@ -74,13 +74,13 @@ int catan::Player::placeSettlement(Catan* game, bool round0)
         {
             case -1:
                 cout << "Vertex already has a settlement, please try again." << endl;
-                continue;
+                break;
             case -2:
                 cout << "Vertex has a neighbor with a settlement, please try again." << endl;
-                continue;
+                break;
             case -3:
                 cout << "No road owned by you connects to this vertex, please try again." << endl;
-                continue;
+                break;
             case 0:
                 cout << "Settlement placed successfully." << endl;
                 this->buySettlement(round0);
@@ -124,7 +124,7 @@ int catan::Player::placeRoad(Catan* game, bool round0)
         cin >> edgeIndex;
         if(edgeIndex < 0 || edgeIndex > 5)
         {
-            if(landNum == 102)
+            if(edgeIndex == 102)
             {
                 if(round0)
                 {
@@ -143,10 +143,10 @@ int catan::Player::placeRoad(Catan* game, bool round0)
         {
             case -1:
                 cout << "Edge already has a road, please try again." << endl;
-                continue;
+                break;
             case -2:
                 cout << "Road must be connected to a settlement or a road owned by you, please try again." << endl;
-                continue;
+                break;
             case 0:
                 cout << "Road placed successfully." << endl;
                 this->buyRoad(round0);
@@ -154,6 +154,66 @@ int catan::Player::placeRoad(Catan* game, bool round0)
         }  
     }
     return -1;
+}
+
+int catan::Player::placeCity(Catan *game)
+{
+    if(this->resources[2] < 3 && this->resources[4] < 2)
+    {
+        // not enough resources to buy a city
+        return -1;
+    }
+
+    while(true)
+    {
+        cout << "Enter 102 at any stage to leave this process." << endl;
+        cout << "Enter the number of the land you want to place your city on: ";
+        size_t landNum;
+        cin >> landNum;
+        if(landNum < 0 || landNum > 18)
+        {
+            if(landNum == 102)
+            {
+                cout << "Leaving city placement process." << endl;
+                return -1;
+            }
+            cout << "Land number must be between 0 - 18, please try again." << endl;
+            continue;
+        }
+        cout << "Enter the vertex index you want to place your city on: ";
+        size_t vertexIndex;
+        cin >> vertexIndex;
+        if(vertexIndex < 0 || vertexIndex > 5)
+        {
+            if(vertexIndex == 102)
+            {
+                cout << "Leaving city placement process." << endl;
+                return -1;
+            }
+            cout << "Vertex index must be between 0 - 5, please try again." << endl;
+            continue;
+        }
+        cout << "can not change your mind anymore." << endl;
+        int ans = game->placeCity(this, landNum, vertexIndex);
+        switch(ans)
+        {
+            case -1:
+                cout << "Vertex does not have a settlement, please try again." << endl;
+                break;
+            case -2:
+                cout << "Vertex is owned by another player, please try again." << endl;
+                break;
+            case -3:
+                cout << "Vertex already has a city, please try again." << endl;
+                break;
+            case 0:
+                cout << "City placed successfully." << endl;
+                this->buyCity();
+                return 0;
+        }  
+    }
+    return -1;
+
 }
 
 int catan::Player::getTotalResources() const
@@ -164,6 +224,16 @@ int catan::Player::getTotalResources() const
         total += this->resources[i];
     }
     return total;
+}
+
+void catan::Player::displayResources() const
+{
+    cout << "Resources:" << endl;
+    cout << "BRICK: " << this->resources[0] << endl;
+    cout << "WOOD: " << this->resources[1] << endl;
+    cout << "WHEAT: " << this->resources[2] << endl;
+    cout << "SHEEP: " << this->resources[3] << endl;
+    cout << "IRON: " << this->resources[4] << endl;
 }
 
 void catan::Player::discardResources(int resourceTotal)
@@ -224,5 +294,93 @@ void catan::Player::buyRoad(bool round0)
     {
         this->removeResource(0, 1);
         this->removeResource(1, 1);
+    }
+}
+
+void catan::Player::playTurn(Catan *game)
+{
+    char op = 0;
+    bool rolled = false;
+    while(true)
+    {
+        cout << "Enter your move:"<< endl;
+        cout << "   Press 1 to rool the dice." << endl;
+        cout << "   Press 2 to use a development card." << endl;
+        cout << "   Press C to display development cards." << endl;
+        cout << "   Press R to display resources." << endl;
+        cout << "   Press K to display knight cards." << endl;
+        cout << "   Press V to display victory points." << endl;
+        cin >> op;
+        switch(op)
+        {
+            case '1':
+                game->rollDice();
+                rolled = true;
+                break;
+            case '2':
+                // this->playDevCard();
+               return;
+            case 'C':
+                // this->displayDevCards();
+                break;
+            case 'R':
+                this->displayResources();
+                break;
+            case 'K':
+                // this->displayKnightCards();
+                break;
+            case 'V':
+                cout << "Victory Points: " << this->getVictoryPoints() << endl;
+                break;
+            default:
+                cout << "You must first rool the dice or use a development card!" << endl;
+        }
+        if(rolled) {break;}
+    }
+    while(true)
+    {
+        cout << "Enter your move:"<< endl;
+        cout << "   Press 1 to place a settlement." << endl;
+        cout << "   Press 2 to place a city." << endl;
+        cout << "   Press 3 to place a road." << endl;
+        cout << "   Press 4 to buy a development card." << endl;
+        cout << "   Press 5 to use a development card." << endl;
+        cout << "   Press 6 to trade." << endl;
+        cout << "   Press B to display board." << endl;
+        cout << "   Press R to display resources." << endl;
+        cout << "   Press V to display victory points." << endl;
+        cin >> op;
+        switch(op)
+        {
+            case '1':
+                this->placeSettlement(game, false);
+                break;
+            case '2':
+                this->placeCity(game);
+                break;
+            case '3':
+                this->placeRoad(game, false);
+                break;
+            case '4':
+                // this->buyDevCard();
+                break;
+            case '5':
+                // this->playDevCard();
+                break;
+            case '6':
+                // this->trade();
+                break;
+            case 'B':
+                // game->displayBoard();
+                break;
+            case 'R':
+                this->displayResources();
+                break;
+            case 'V':
+                cout << "Victory Points: " << this->getVictoryPoints() << endl;
+                break;
+            default:
+                cout << "Invalid move, please try again." << endl;
+        }
     }
 }

@@ -17,7 +17,7 @@ catan::Catan::Catan(Player &player1, Player &player2, Player &player3)
     init();
 }
 
-catan::Catan::Catan(Player &player1, Player &player2, Player &player3, int seed) 
+catan::Catan::Catan(Player &player1, Player &player2, Player &player3, uint seed) 
 : players{&player1, &player2, &player3}, board(19), landNum()
 {   
     srand(seed);
@@ -711,14 +711,13 @@ void catan::Catan::playTurn()
     this->displayBoard();
     Player* currentPlayer = players[(size_t)this->curPlayer]; 
     cout << currentPlayer->getColor() << currentPlayer->getName() << " \033[0mturn" << endl;
-    cout << "Resources: " << currentPlayer->getResource(WOOD) << " wood, " << currentPlayer->getResource(BRICK) << " brick, " << currentPlayer->getResource(SHEEP) << " sheep, " << currentPlayer->getResource(WHEAT) << " wheat, " << currentPlayer->getResource(IRON) << " ore" << endl;
-    this->rollDice();
+    currentPlayer->playTurn(this);
     this->curPlayer = (this->curPlayer + 1) % 3;
 }   
 
 catan::Player* catan::Catan::isGameOver()
 {
-    for(size_t i = 0; i < 3; i++)
+    for(size_t i = 0; i < MAX_PLAYERS; i++)
     {
         if(players[i]->getVictoryPoints() >= 10)
         {
@@ -781,6 +780,27 @@ int catan::Catan::placeSettlement(Player* player, size_t landNum, size_t vertexI
     return 0;
 }
 
+int catan::Catan::placeCity(Player* player, size_t landNum, size_t vertexIndex)
+{
+    if(this->board[landNum]->getVertex(vertexIndex)->getOwner() == nullptr)
+    {
+        // need a settlement first
+        return -1;
+    }
+    if(this->board[landNum]->getVertex(vertexIndex)->getOwner() != player)
+    {
+        // vertex is not owned by the player
+        return -2;
+    }
+    if(!this->board[landNum]->getVertex(vertexIndex)->isSettlementf())
+    {
+        // vertex is already a city
+        return -3;
+    }
+    this->board[landNum]->getVertex(vertexIndex)->placeCity();
+    return 0;
+}
+
 int catan::Catan::placeRoad(Player* player, size_t landNum, size_t edgeIndex)
 {
     if(this->board[landNum]->getEdge(edgeIndex)->getOwner() != nullptr)
@@ -799,10 +819,10 @@ int catan::Catan::placeRoad(Player* player, size_t landNum, size_t edgeIndex)
 
 void catan::Catan::displayBoard()
 {
-    cout << "            " << this->board[0]->getVertex(0)->getConstructionSymbol() << "      " << this->board[1]->getVertex(0)->getConstructionSymbol() << "       " << this->board[1]->getVertex(0)->getConstructionSymbol() << "\n"
+    cout << "            " << this->board[0]->getVertex(0)->getConstructionSymbol() << "      " << this->board[1]->getVertex(0)->getConstructionSymbol() << "       " << this->board[2]->getVertex(0)->getConstructionSymbol() << "\n"
          << "          " << this->board[0]->getEdge(0)->getColor() << "/   " << this->board[0]->getEdge(5)->getColor() << "\\  " << this->board[1]->getEdge(0)->getColor() << "/   " << this->board[1]->getEdge(5)->getColor() << "\\   " << this->board[2]->getEdge(0)->getColor() << "/   " << this->board[2]->getEdge(5)->getColor() << "\\\033[0m\n"
          << "         " << this->board[0]->getVertex(1)->getConstructionSymbol() << "     " << this->board[0]->getVertex(5)->getConstructionSymbol() << "       " << this->board[1]->getVertex(5)->getConstructionSymbol() << "      " << this->board[2]->getVertex(5)->getConstructionSymbol() << "\n"
-         << "         " << this->board[0]->getEdge(1)->getColor() << "| " << this->board[0]->getLandSymbol() << this->board[0]->getEdge(4)->getColor() << "  |" << "  " << this->board[1]->getLandSymbol() << this->board[0]->getEdge(4)->getColor() << "   |  " << this->board[2]->getLandSymbol() << "  " << this->board[2]->getEdge(4)->getColor() << "|\033[0m\n"
+         << "         " << this->board[0]->getEdge(1)->getColor() << "| " << this->board[0]->getLandSymbol() << this->board[0]->getEdge(4)->getColor() << "  |" << "  " << this->board[1]->getLandSymbol() << this->board[1]->getEdge(4)->getColor() << "   |  " << this->board[2]->getLandSymbol() << "  " << this->board[2]->getEdge(4)->getColor() << "|\033[0m\n"
          << "         " << this->board[0]->getVertex(2)->getConstructionSymbol() << " " << this->getLandIndex(this->board[0]) << "  " << this->board[0]->getVertex(4)->getConstructionSymbol() << "   " << this->getLandIndex(this->board[1]) << "   " << this->board[1]->getVertex(4)->getConstructionSymbol() << "   " << this->getLandIndex(this->board[2]) << "  " << this->board[2]->getVertex(4)->getConstructionSymbol() << "\n"
          << "       " << this->board[3]->getEdge(0)->getColor() << "/   " << this->board[3]->getEdge(5)->getColor() << "\\ " << this->board[4]->getEdge(0)->getColor() << "/   " << this->board[4]->getEdge(5)->getColor() << "\\   " << this->board[5]->getEdge(0)->getColor() << "/   " << this->board[5]->getEdge(5)->getColor() << "\\  " << this->board[6]->getEdge(0)->getColor() << "/   " << this->board[6]->getEdge(5)->getColor() << "\\\033[0m\n"
          << "      " << this->board[3]->getVertex(1)->getConstructionSymbol() << "     " << this->board[3]->getVertex(5)->getConstructionSymbol() << "      " << this->board[4]->getVertex(5)->getConstructionSymbol() << "      " << this->board[5]->getVertex(5)->getConstructionSymbol() << "      " << this->board[6]->getVertex(5)->getConstructionSymbol() << "\n"

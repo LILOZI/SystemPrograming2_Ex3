@@ -24,7 +24,7 @@ namespace catan
 
             virtual CARDTYPE getType() = 0;
             virtual std::string getDescription() = 0;
-            virtual std::string icon() = 0;
-            virtual Card* clone() = 0;
+            // virtual std::string icon() = 0;
+            // virtual Card* clone() = 0;
     };
 }

@@ -81,10 +81,15 @@ string catan::LandVertex::getConstructionSymbol() const
     string rstCol = "\033[0m";
     string res = col;
 
+    // if (this->isSettlement) {
+    //     res += "🏙" + rstCol;
+    // } else {
+    //     res += "🏘" + rstCol;
+    // }
     if (this->isSettlement) {
-        res += "🏙" + rstCol;
+        res += "S" + rstCol;
     } else {
-        res += "🏘" + rstCol;
+        res += "C" + rstCol;
     }
 
     return res;

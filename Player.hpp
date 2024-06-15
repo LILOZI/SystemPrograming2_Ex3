@@ -50,6 +50,8 @@ namespace catan
 
             int placeSettlement(Catan* gane, bool round0);
 
+            int placeCity(Catan* game);
+
             void addResource(int resourceType, int amount) { this->resources[resourceType] += amount; };
             void removeResource(int resourceType, int amount) { this->resources[resourceType] -= amount;}
             /**
@@ -66,7 +68,11 @@ namespace catan
 
             int getTotalResources() const;
 
+            void playTurn(Catan *game);
+
             void discardResources(int resourceTotal);
+
+            void displayResources() const;
 
             /**
              * @brief Get the amount of victory points a player holds.

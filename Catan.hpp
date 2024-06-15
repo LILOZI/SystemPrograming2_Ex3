@@ -88,7 +88,7 @@ namespace catan
         public:
             Catan(Player &player1, Player &player2, Player &player3);
             // Catan();
-            Catan(Player &player1, Player &player2, Player &player3, int seed);
+            Catan(Player &player1, Player &player2, Player &player3, uint seed);
             // copy constructor, assignment operator, destructor - rule of three
             // Catan(const Catan &other);
             ~Catan();
@@ -126,7 +126,7 @@ namespace catan
             vector<Land*> getBoard() { return this->board; }
 
             int placeSettlement(Player *player, size_t landNum,size_t vertexIndex, bool round0);
-            int placeCity(Player &player, size_t landNum, size_t vertexIndex);
+            int placeCity(Player *player, size_t landNum, size_t vertexIndex);
             int placeRoad(Player *player, size_t landNum, size_t edgeIndex);
 
             void displayBoard();

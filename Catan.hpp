@@ -4,6 +4,8 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <iomanip>
+#include <ios>
 #include <set>
 #include <utility>
 using std::vector;
@@ -12,6 +14,7 @@ using std::cout;
 using std::endl;
 using std::set;
 using std::pair;
+using std::cin;
 
 #include <algorithm>
 
@@ -43,7 +46,7 @@ namespace catan
     {
 
         private:
-            int current_player;
+            int curPlayer;
             vector<Player*> players;
             vector<Land*> board;
             // vector<Card*> devCardsDeck;
@@ -78,17 +81,14 @@ namespace catan
         **/
         void setVxsAndEdges();
 
-        /** 
-         * @brief Roll 2 fair dices, return the sum.
-        **/
-        int rollDice();
+        
 
         int getLandIndex(Land* land);
 
         public:
             Catan(Player &player1, Player &player2, Player &player3);
             // Catan();
-            
+            Catan(Player &player1, Player &player2, Player &player3, int seed);
             // copy constructor, assignment operator, destructor - rule of three
             // Catan(const Catan &other);
             ~Catan();
@@ -99,6 +99,11 @@ namespace catan
              * @return The player that won the game. 
             **/
             Player* start();
+
+            /** 
+             * @brief Roll 2 fair dices, return the sum.
+            **/
+            int rollDice();
 
             /**
              * @brief Play the "0 - round".
@@ -120,9 +125,9 @@ namespace catan
             **/
             vector<Land*> getBoard() { return this->board; }
 
-            bool placeSettlement(Player &player, size_t vertexNumber);
-            bool placeCity(Player &player, size_t vertexNumber);
-            bool placeRoad(Player &player, size_t edgeNumber);
+            int placeSettlement(Player *player, size_t landNum,size_t vertexIndex, bool round0);
+            int placeCity(Player &player, size_t landNum, size_t vertexIndex);
+            int placeRoad(Player *player, size_t landNum, size_t edgeIndex);
 
             void displayBoard();
 

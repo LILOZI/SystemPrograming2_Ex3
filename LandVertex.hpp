@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Player.hpp"
-
+// #include "LandEdge.hpp"
 
 #include <utility>
 #include <vector>
@@ -28,6 +28,9 @@ namespace catan
             Player* owner;
             bool isSettlement;
 
+
+            void setOwner(Player* owner) { this->owner = owner; };
+            void setSettlement(bool isSettlement) { this->isSettlement = isSettlement; };
         public:
             LandVertex() {};
             ~LandVertex();
@@ -42,17 +45,31 @@ namespace catan
 
             void addNeighbors(LandVertex* vertex0, LandVertex* vertex1, LandVertex* vertex2);
             void addIncidentEdges(LandEdge* edge0, LandEdge* edge1, LandEdge* edge2);
-            void setOwner(Player* owner) { this->owner = owner; };
-            void setSettlement(bool isSettlement) { this->isSettlement = isSettlement; };
+    
             bool isSettlementf() { return this->isSettlement; };
             Player* getOwner() { return this->owner; };
 
             string getConstructionSymbol() const;
 
+            void placeSettlement(Player* player);
+
+            void placeCity();
+
+            /**
+             * @brief Check if this vertex has no neighbors with settlements.
+            **/
+            bool settRadValid() const;
+
+            bool settRoadValid(Player *player) const; 
+
             /** 
              * @brief For testing purposes
             **/
             vector<LandVertex*> getNeighbors() { return this->neighbors; };
+            /** 
+             * @brief For testing purposes
+            **/
+            vector<LandEdge*> getIncidentEdges() { return this->incidentEdges; };
 
             int getId() { return this->id; };
 

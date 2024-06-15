@@ -6,7 +6,7 @@ catan::Catan::Catan(Player &player1, Player &player2, Player &player3)
 : players{&player1, &player2, &player3}, board(19), landNum()
 {   
     srand(time(nullptr));
-    current_player = 0;
+    curPlayer = 0;
 
     for(size_t i = 0; i < 19; i++)
     {
@@ -14,9 +14,24 @@ catan::Catan::Catan(Player &player1, Player &player2, Player &player3)
         int num = rand() % 11 + 2;
         landNum[num].push_back(board[i]);   
     }
-    
     init();
 }
+
+catan::Catan::Catan(Player &player1, Player &player2, Player &player3, int seed) 
+: players{&player1, &player2, &player3}, board(19), landNum()
+{   
+    srand(seed);
+    curPlayer = 0;
+
+    for(size_t i = 0; i < 19; i++)
+    {
+        board[i] = new Land(i);
+        int num = rand() % 11 + 2;
+        landNum[num].push_back(board[i]);   
+    }
+    init();
+}
+
 
 // catan::Catan::Catan(const Catan &other)
 // {
@@ -131,7 +146,15 @@ int catan::Catan::rollDice()
     cout << "Dice 1: " << d1 << " Dice 2: " << d2 << " Sum: " << sum << endl;
     if(sum == 7)
     {
-        // move robber
+        cout << "Dices result is 7, all players with more than 7 resources must discard half of their resources" << endl;
+        for(size_t i = 0; i < MAX_PLAYERS; i++)
+        {
+            int resourceTotal = players[i]->getTotalResources();
+            if(resourceTotal > 7)
+            {
+                players[i]->discardResources(resourceTotal);
+            }
+        }
     }
     else
     {
@@ -163,17 +186,22 @@ int catan::Catan::rollDice()
 
 void catan::Catan::playRound0()
 {
-    this->board[0]->getVertex(0)->setOwner(this->players[0]);
-    this->board[0]->getVertex(0)->setSettlement(true);
-    this->displayBoard();
     for(size_t i = 0; i < MAX_PLAYERS; i++)
     {
-        cout << this->players[i]->getColor() << this->players[i]->getName() << " \033[0mturn" << endl;
-        // players[i]->placeSettlement();
+        this->displayBoard();
+        cout << this->players[i]->getColor() << this->players[i]->getName() << " \033[0mturn to place a settlement and a road" << endl;
+        this->players[i]->placeSettlement(this, true);
+        this->players[i]->placeRoad(this, true);
+    }
+    cout << "Now place the second settlement and road" << endl;
+    for(size_t i = 0; i < MAX_PLAYERS; i++)
+    {
+        this->displayBoard();
+        cout << this->players[i]->getColor() << this->players[i]->getName() << " \033[0mturn to place a settlement and a road" << endl;
+        this->players[i]->placeSettlement(this, true);
+        this->players[i]->placeRoad(this, true);
     }
 }
-
-
 
 void catan::Catan::createBoardVertices()
 {
@@ -256,7 +284,7 @@ void catan::Catan::setVxsAndEdges()
             // edges
     this->board[0]->getVertex(0)->addIncidentEdges(this->board[0]->getEdge(0), this->board[0]->getEdge(5), nullptr);
     this->board[0]->getVertex(1)->addIncidentEdges(this->board[0]->getEdge(1), this->board[0]->getEdge(0), nullptr);
-    this->board[0]->getVertex(2)->addIncidentEdges(this->board[0]->getEdge(1), this->board[3]->getEdge(0), this->board[0]->getEdge(1));
+    this->board[0]->getVertex(2)->addIncidentEdges(this->board[0]->getEdge(1), this->board[3]->getEdge(0), this->board[0]->getEdge(2));
     this->board[0]->getVertex(3)->addIncidentEdges(this->board[0]->getEdge(2), this->board[3]->getEdge(4), this->board[0]->getEdge(3));
     this->board[0]->getVertex(4)->addIncidentEdges(this->board[0]->getEdge(4), this->board[0]->getEdge(3), this->board[4]->getEdge(5));
     this->board[0]->getVertex(5)->addIncidentEdges(this->board[0]->getEdge(5), this->board[0]->getEdge(4), this->board[1]->getEdge(0));
@@ -269,7 +297,7 @@ void catan::Catan::setVxsAndEdges()
     this->board[0]->getEdge(4)->setVertices(this->board[0]->getVertex(4), this->board[0]->getVertex(5));
     this->board[0]->getEdge(5)->setVertices(this->board[0]->getVertex(5), this->board[0]->getVertex(0));
             // edges
-    this->board[0]->getEdge(0)->addAdjEdges(this->board[0]->getEdge(0), this->board[0]->getEdge(5), nullptr, nullptr);
+    this->board[0]->getEdge(0)->addAdjEdges(this->board[0]->getEdge(1), this->board[0]->getEdge(5), nullptr, nullptr);
     this->board[0]->getEdge(1)->addAdjEdges(this->board[3]->getEdge(0), this->board[0]->getEdge(2), this->board[0]->getEdge(0), nullptr);
     this->board[0]->getEdge(2)->addAdjEdges(this->board[0]->getEdge(1), this->board[3]->getEdge(0), this->board[3]->getEdge(4), this->board[0]->getEdge(3));
     this->board[0]->getEdge(3)->addAdjEdges(this->board[0]->getEdge(2), this->board[3]->getEdge(4), this->board[4]->getEdge(5), this->board[0]->getEdge(4));
@@ -333,7 +361,7 @@ void catan::Catan::setVxsAndEdges()
     // Land 3
         // LandVertices
             // vertices
-    this->board[3]->getVertex(1)->addNeighbors(this->board[0]->getVertex(2), this->board[3]->getVertex(2), nullptr);
+    this->board[3]->getVertex(1)->addNeighbors(this->board[3]->getVertex(2), this->board[0]->getVertex(2), nullptr);
     this->board[3]->getVertex(2)->addNeighbors(this->board[3]->getVertex(1), this->board[7]->getVertex(1), this->board[3]->getVertex(3));
     this->board[3]->getVertex(3)->addNeighbors(this->board[3]->getVertex(2), this->board[7]->getVertex(4), this->board[3]->getVertex(4));
     this->board[3]->getVertex(4)->addNeighbors(this->board[0]->getVertex(3), this->board[3]->getVertex(3), this->board[4]->getVertex(3));
@@ -353,7 +381,7 @@ void catan::Catan::setVxsAndEdges()
     this->board[3]->getEdge(0)->addAdjEdges(this->board[0]->getEdge(1), this->board[3]->getEdge(1), this->board[0]->getEdge(2), nullptr);
     this->board[3]->getEdge(1)->addAdjEdges(this->board[7]->getEdge(0), this->board[3]->getEdge(2), this->board[3]->getEdge(0), nullptr);
     this->board[3]->getEdge(2)->addAdjEdges(this->board[3]->getEdge(1), this->board[7]->getEdge(0), this->board[7]->getEdge(4), this->board[3]->getEdge(3));
-    this->board[3]->getEdge(3)->addAdjEdges(this->board[3]->getEdge(2), this->board[7]->getEdge(4), this->board[4]->getEdge(2), nullptr);
+    this->board[3]->getEdge(3)->addAdjEdges(this->board[3]->getEdge(2), this->board[7]->getEdge(4), this->board[4]->getEdge(2), this->board[3]->getEdge(4));
     this->board[3]->getEdge(4)->addAdjEdges(this->board[0]->getEdge(2), this->board[3]->getEdge(3), this->board[4]->getEdge(2), this->board[0]->getEdge(3));
 
     // Land 4
@@ -392,7 +420,7 @@ void catan::Catan::setVxsAndEdges()
             // edges
     this->board[5]->getEdge(2)->addAdjEdges(this->board[4]->getEdge(4), this->board[4]->getEdge(3), this->board[9]->getEdge(4), this->board[5]->getEdge(3));
     this->board[5]->getEdge(3)->addAdjEdges(this->board[5]->getEdge(2), this->board[9]->getEdge(4), this->board[6]->getEdge(2), this->board[5]->getEdge(4));
-    this->board[5]->getEdge(4)->addAdjEdges(this->board[2]->getEdge(2), this->board[5]->getEdge(3), this->board[6]->getEdge(2), this->board[2]->getEdge(4));
+    this->board[5]->getEdge(4)->addAdjEdges(this->board[2]->getEdge(2), this->board[5]->getEdge(3), this->board[6]->getEdge(2), this->board[2]->getEdge(3));
     
     // Land 6
         // LandVertices
@@ -439,7 +467,7 @@ void catan::Catan::setVxsAndEdges()
     this->board[7]->getEdge(4)->setVertices(this->board[7]->getVertex(4), this->board[7]->getVertex(5));
             // edges
     this->board[7]->getEdge(0)->addAdjEdges(this->board[3]->getEdge(1), this->board[7]->getEdge(1), this->board[3]->getEdge(2), nullptr);
-    this->board[7]->getEdge(1)->addAdjEdges(this->board[7]->getEdge(0), this->board[7]->getEdge(2), nullptr, nullptr);
+    this->board[7]->getEdge(1)->addAdjEdges(this->board[7]->getEdge(2), this->board[7]->getEdge(0), nullptr, nullptr);
     this->board[7]->getEdge(2)->addAdjEdges(this->board[7]->getEdge(1), this->board[12]->getEdge(1), this->board[7]->getEdge(3), nullptr);
     this->board[7]->getEdge(3)->addAdjEdges(this->board[7]->getEdge(2), this->board[12]->getEdge(1), this->board[8]->getEdge(2), this->board[7]->getEdge(4));
     this->board[7]->getEdge(4)->addAdjEdges(this->board[3]->getEdge(2), this->board[7]->getEdge(3), this->board[8]->getEdge(2), this->board[3]->getEdge(3));
@@ -519,7 +547,7 @@ void catan::Catan::setVxsAndEdges()
     this->board[11]->getEdge(4)->setVertices(this->board[11]->getVertex(4), this->board[11]->getVertex(5));
     this->board[11]->getEdge(5)->setVertices(this->board[11]->getVertex(5), this->board[11]->getVertex(0));
             // edges
-    this->board[11]->getEdge(2)->addAdjEdges(this->board[10]->getEdge(4), this->board[10]->getEdge(3), this->board[11]->getEdge(3), nullptr);
+    this->board[11]->getEdge(2)->addAdjEdges(this->board[10]->getEdge(4), this->board[10]->getEdge(3), this->board[15]->getEdge(4),this->board[11]->getEdge(3));
     this->board[11]->getEdge(3)->addAdjEdges(this->board[11]->getEdge(2), this->board[15]->getEdge(4), this->board[11]->getEdge(4), nullptr);
     this->board[11]->getEdge(4)->addAdjEdges(this->board[11]->getEdge(5), this->board[11]->getEdge(3), nullptr, nullptr);
     this->board[11]->getEdge(5)->addAdjEdges(this->board[6]->getEdge(4), this->board[6]->getEdge(3), this->board[11]->getEdge(4), nullptr);
@@ -529,7 +557,7 @@ void catan::Catan::setVxsAndEdges()
             // vertices
     this->board[12]->getVertex(2)->addNeighbors(this->board[12]->getVertex(1), this->board[12]->getVertex(3), nullptr);
     this->board[12]->getVertex(3)->addNeighbors(this->board[12]->getVertex(2), this->board[16]->getVertex(2), this->board[12]->getVertex(4));
-    this->board[12]->getVertex(4)->addNeighbors(this->board[8]->getVertex(4), this->board[12]->getVertex(3), this->board[13]->getVertex(3));
+    this->board[12]->getVertex(4)->addNeighbors(this->board[8]->getVertex(3), this->board[12]->getVertex(3), this->board[13]->getVertex(3));
             // edges
     this->board[12]->getVertex(2)->addIncidentEdges(this->board[12]->getEdge(1), this->board[12]->getEdge(2), nullptr);
     this->board[12]->getVertex(3)->addIncidentEdges(this->board[12]->getEdge(2), this->board[16]->getEdge(1), this->board[12]->getEdge(3));
@@ -550,7 +578,7 @@ void catan::Catan::setVxsAndEdges()
     // Land 13
         // LandVertices
             // vertices
-    this->board[13]->getVertex(3)->addNeighbors(this->board[12]->getVertex(4), this->board[13]->getVertex(4), nullptr);
+    this->board[13]->getVertex(3)->addNeighbors(this->board[12]->getVertex(4), this->board[16]->getVertex(4),this->board[13]->getVertex(4));
     this->board[13]->getVertex(4)->addNeighbors(this->board[9]->getVertex(3), this->board[13]->getVertex(3), this->board[14]->getVertex(3));
             // edges
     this->board[13]->getVertex(3)->addIncidentEdges(this->board[13]->getEdge(2), this->board[16]->getEdge(4), this->board[13]->getEdge(3));
@@ -669,24 +697,24 @@ void catan::Catan::setVxsAndEdges()
 
 catan::Player* catan::Catan::start()
 {
-    // playRound0();
-    displayBoard();
-    if(this->board[2]->getVertex(3)->getNeighbors()[1] == nullptr)
-    {
-        cout << "null" << endl;
-    }
-    else
-    {
-        cout << "not null" << endl;
-    }
+    this->playRound0();
     Player* winner = nullptr;
     while((winner = isGameOver()) == nullptr)
     {
-        // playTurn();
+        playTurn();
     }
     return winner;
 }
 
+void catan::Catan::playTurn()
+{
+    this->displayBoard();
+    Player* currentPlayer = players[(size_t)this->curPlayer]; 
+    cout << currentPlayer->getColor() << currentPlayer->getName() << " \033[0mturn" << endl;
+    cout << "Resources: " << currentPlayer->getResource(WOOD) << " wood, " << currentPlayer->getResource(BRICK) << " brick, " << currentPlayer->getResource(SHEEP) << " sheep, " << currentPlayer->getResource(WHEAT) << " wheat, " << currentPlayer->getResource(IRON) << " ore" << endl;
+    this->rollDice();
+    this->curPlayer = (this->curPlayer + 1) % 3;
+}   
 
 catan::Player* catan::Catan::isGameOver()
 {
@@ -714,15 +742,66 @@ int catan::Catan::getLandIndex(Land* land)
             }
         }
     }
-    
     return -1;
+}
+
+int catan::Catan::placeSettlement(Player* player, size_t landNum, size_t vertexIndex, bool round0)
+{
+    if(this->board[landNum]->getVertex(vertexIndex)->getOwner() != nullptr)
+    {
+        // vertex is already occupied
+        return -1;
+    }
+    if(!this->board[landNum]->getVertex(vertexIndex)->settRadValid())
+    {
+        // vertex is too close to another settlement
+        return -2;
+    }
+    if(!round0)
+    {
+        if(!this->board[landNum]->getVertex(vertexIndex)->settRoadValid(player))
+        {
+            // vertex is not connected to a road owned by the player
+            return -3;
+        }
+    }
+    if(round0)
+    {
+        int resource = this->board[landNum]->getResourceInt();
+        if(resource != DESERT)
+        {
+            if(player->getResource(resource) < 1)
+            {
+                player->addResource(resource, 1);
+            }
+        }
+    }
+    this->board[landNum]->getVertex(vertexIndex)->placeSettlement(player);
+
+    return 0;
+}
+
+int catan::Catan::placeRoad(Player* player, size_t landNum, size_t edgeIndex)
+{
+    if(this->board[landNum]->getEdge(edgeIndex)->getOwner() != nullptr)
+    {
+        // edge is already occupied
+        return -1;
+    }
+    if(!this->board[landNum]->getEdge(edgeIndex)->roadValid(player))
+    {
+        // edge is not connected to a settlement or another road owned by the player
+        return -2;
+    }
+    this->board[landNum]->getEdge(edgeIndex)->placeRoad(player);
+    return 0;
 }
 
 void catan::Catan::displayBoard()
 {
     cout << "            " << this->board[0]->getVertex(0)->getConstructionSymbol() << "      " << this->board[1]->getVertex(0)->getConstructionSymbol() << "       " << this->board[1]->getVertex(0)->getConstructionSymbol() << "\n"
          << "          " << this->board[0]->getEdge(0)->getColor() << "/   " << this->board[0]->getEdge(5)->getColor() << "\\  " << this->board[1]->getEdge(0)->getColor() << "/   " << this->board[1]->getEdge(5)->getColor() << "\\   " << this->board[2]->getEdge(0)->getColor() << "/   " << this->board[2]->getEdge(5)->getColor() << "\\\033[0m\n"
-         << "         " << this->board[0]->getVertex(1)->getConstructionSymbol() << "     " << this->board[0]->getVertex(4)->getConstructionSymbol() << "       " << this->board[1]->getVertex(4)->getConstructionSymbol() << "      " << this->board[2]->getVertex(4)->getConstructionSymbol() << "\n"
+         << "         " << this->board[0]->getVertex(1)->getConstructionSymbol() << "     " << this->board[0]->getVertex(5)->getConstructionSymbol() << "       " << this->board[1]->getVertex(5)->getConstructionSymbol() << "      " << this->board[2]->getVertex(5)->getConstructionSymbol() << "\n"
          << "         " << this->board[0]->getEdge(1)->getColor() << "| " << this->board[0]->getLandSymbol() << this->board[0]->getEdge(4)->getColor() << "  |" << "  " << this->board[1]->getLandSymbol() << this->board[0]->getEdge(4)->getColor() << "   |  " << this->board[2]->getLandSymbol() << "  " << this->board[2]->getEdge(4)->getColor() << "|\033[0m\n"
          << "         " << this->board[0]->getVertex(2)->getConstructionSymbol() << " " << this->getLandIndex(this->board[0]) << "  " << this->board[0]->getVertex(4)->getConstructionSymbol() << "   " << this->getLandIndex(this->board[1]) << "   " << this->board[1]->getVertex(4)->getConstructionSymbol() << "   " << this->getLandIndex(this->board[2]) << "  " << this->board[2]->getVertex(4)->getConstructionSymbol() << "\n"
          << "       " << this->board[3]->getEdge(0)->getColor() << "/   " << this->board[3]->getEdge(5)->getColor() << "\\ " << this->board[4]->getEdge(0)->getColor() << "/   " << this->board[4]->getEdge(5)->getColor() << "\\   " << this->board[5]->getEdge(0)->getColor() << "/   " << this->board[5]->getEdge(5)->getColor() << "\\  " << this->board[6]->getEdge(0)->getColor() << "/   " << this->board[6]->getEdge(5)->getColor() << "\\\033[0m\n"
@@ -738,10 +817,9 @@ void catan::Catan::displayBoard()
          << "      " << this->board[12]->getEdge(1)->getColor() << "| " << this->board[12]->getLandSymbol() << this->board[12]->getEdge(4)->getColor() << "  |  " << this->board[13]->getLandSymbol() << this->board[13]->getEdge(4)->getColor() << "  |  " << this->board[14]->getLandSymbol() << this->board[14]->getEdge(4)->getColor() << "  |  " << this->board[15]->getLandSymbol() << this->board[15]->getEdge(4)->getColor() << "  |\033[0m\n"
          << "      " << this->board[12]->getVertex(2)->getConstructionSymbol() << "  " << this->getLandIndex(this->board[12]) << "  " << this->board[12]->getVertex(4)->getConstructionSymbol() << "   " << this->getLandIndex(this->board[13]) << "  " << this->board[13]->getVertex(4)->getConstructionSymbol() << "   " << this->getLandIndex(this->board[14]) << "  " << this->board[14]->getVertex(4)->getConstructionSymbol() << "   " << this->getLandIndex(this->board[15]) << "  " << this->board[15]->getVertex(4)->getConstructionSymbol() << "\n"
          << "       " << this->board[12]->getEdge(2)->getColor() << "\\   " << this->board[12]->getEdge(3)->getColor() << "/  " << this->board[13]->getEdge(2)->getColor() << "\\   " << this->board[13]->getEdge(3)->getColor() << "/  " << this->board[14]->getEdge(2)->getColor() << "\\   " << this->board[14]->getEdge(3)->getColor() << "/  " << this->board[15]->getEdge(2)->getColor() << "\\   " << this->board[15]->getEdge(3)->getColor() << "/\033[0m\n"
-         
          << "         " << this->board[16]->getVertex(1)->getConstructionSymbol() << "      " << this->board[16]->getVertex(5)->getConstructionSymbol() << "      " << this->board[17]->getVertex(5)->getConstructionSymbol() << "      " << this->board[18]->getVertex(5)->getConstructionSymbol() << "\n"
          << "         " << this->board[16]->getEdge(1)->getColor() << "|  " << this->board[16]->getLandSymbol() << this->board[16]->getEdge(4)->getColor() << "  |  " << this->board[17]->getLandSymbol() << this->board[17]->getEdge(4)->getColor() << "  |  " << this->board[18]->getLandSymbol() << this->board[18]->getEdge(4)->getColor() << "  |\033[0m\n"
          << "         " << this->board[16]->getVertex(2)->getConstructionSymbol() << "   " << this->getLandIndex(this->board[16]) << "  " << this->board[16]->getVertex(4)->getConstructionSymbol() << "   " << this->getLandIndex(this->board[17]) << "  " <<this->board[17]->getVertex(4)->getConstructionSymbol() << "   " << this->getLandIndex(this->board[18]) << " " << this->board[18]->getVertex(4)->getConstructionSymbol() << "\n"
          << "           " << this->board[16]->getEdge(2)->getColor() << "\\   " << this->board[16]->getEdge(3)->getColor() << "/  " << this->board[17]->getEdge(2)->getColor() << "\\   " << this->board[17]->getEdge(3)->getColor() << "/  " << this->board[18]->getEdge(2)->getColor() << "\\   " << this->board[18]->getEdge(3)->getColor() << "/\033[0m\n"
-         << "             " << this->board[16]->getVertex(3)->getConstructionSymbol() << "      " << this->board[17]->getVertex(3)->getConstructionSymbol() << "       " << this->board[18]->getVertex(3)->getConstructionSymbol() << "\n";
+         << "             " << this->board[16]->getVertex(3)->getConstructionSymbol() << "      " << this->board[17]->getVertex(3)->getConstructionSymbol() << "      " << this->board[18]->getVertex(3)->getConstructionSymbol() << "\n";
 }

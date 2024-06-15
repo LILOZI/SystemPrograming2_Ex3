@@ -29,6 +29,30 @@ catan::LandEdge::LandEdge(const LandEdge& other)
     }
 }
 
+void catan::LandEdge::placeRoad(Player* player)
+{
+    this->setOwner(player);
+}
+
+bool catan::LandEdge::roadValid(Player* player) const
+{
+    for(size_t i = 0; i < this->adjEdges.size(); i++)
+    {
+        if(this->adjEdges[i] != nullptr)
+        {
+            if(this->adjEdges[i]->getOwner() == player)
+            {
+                return true;
+            }
+        }
+    }
+    if(this->vertices.first->getOwner() == player || this->vertices.second->getOwner() == player)
+    {
+        return true;
+    }
+    return false;
+}
+
 catan::LandEdge& catan::LandEdge::operator=(const LandEdge& other)
 {
     // if(this == &other)

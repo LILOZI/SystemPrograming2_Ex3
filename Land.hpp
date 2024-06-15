@@ -38,6 +38,7 @@ namespace catan
             Land& operator=(const Land& other);
             void setResource(int resourceType);
             string getResource() const { return this->resource;};
+            int getResourceInt() const;
             string getLandSymbol() const;
             LandVertex* getVertex(size_t index) const { return this->vertices[index]; };
             LandEdge* getEdge(size_t index) const { return this->edges[index]; };

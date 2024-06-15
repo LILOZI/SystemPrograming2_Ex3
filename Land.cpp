@@ -52,6 +52,35 @@ catan::Land::Land(const Land& other)
     }
 }
 
+int catan::Land::getResourceInt() const
+{
+    if(this->resource == "BRICK")
+    {
+        return 0;
+    }
+    else if(this->resource == "WOOD")
+    {
+        return 1;
+    }
+    else if(this->resource == "WHEAT")
+    {
+        return 2;
+    }
+    else if(this->resource == "SHEEP")
+    {
+        return 3;
+    }
+    else if(this->resource == "IRON")
+    {
+        return 4;
+    }
+    else if(this->resource == "DESERT")
+    {
+        return 5;
+    }
+    return 6;
+}
+
 catan::Land& catan::Land::operator=(const Land& other)
 {
     if(this == &other)

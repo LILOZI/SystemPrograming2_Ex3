@@ -22,6 +22,7 @@ namespace catan
         BLUE,
         GREEN
     };
+    class Catan;
 
     class Player
     {
@@ -30,7 +31,7 @@ namespace catan
             int color;
             int victoryPoints;
             int resources[5]; // 0 = brick, 1 = wood, 2 = wheat, 3 = sheep, 4 = iron
-            // int constructions[3] = {0}; // 0 = road, 1 = settlement, 2 = city
+            int constructions[3] = {0}; // 0 = road, 1 = settlement, 2 = city
             // vector<Card*> devCards;
 
         public:
@@ -47,16 +48,25 @@ namespace catan
 
             void addVictoryPoints(int points) { this->victoryPoints += points; };
 
-            void placeSettlement(bool isCity, size_t vertexId);
+            int placeSettlement(Catan* gane, bool round0);
 
             void addResource(int resourceType, int amount) { this->resources[resourceType] += amount; };
-            void removeResource(int resourceType, int amount);
+            void removeResource(int resourceType, int amount) { this->resources[resourceType] -= amount;}
             /**
              * @brief Get the amount of a resource a player holds. 
             **/
-            int getResource(int resourceType);
+            int getResource(int resourceType) { return this->resources[resourceType]; };
             void addDevCard(Card* card);
             void removeDevCard(Card* card);
+
+            void buySettlement(bool round0);
+            void buyCity();
+            void buyRoad(bool round0);
+            int placeRoad(Catan* game, bool round0);
+
+            int getTotalResources() const;
+
+            void discardResources(int resourceTotal);
 
             /**
              * @brief Get the amount of victory points a player holds.

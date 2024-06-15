@@ -10,6 +10,7 @@ all: Catan
 
 test: $(TESTOBJ) 
 	$(CXX) $(CXXFLAGS) $(TESTOBJ) -o test
+	./test
 
 Catan: $(SOURCEOBJ)
 	$(CXX) $(CXXFLAGS) $(SOURCEOBJ) -o Catan
@@ -46,6 +47,6 @@ Test.o: Test.cpp
 # 	$(CXX) $(CXXFLAGS) -c Cards.cpp
 
 clean:
-	rm -f *.o Catan
+	rm -f *.o Catan test
 
 .PHONY: all clean	

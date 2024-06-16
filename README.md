@@ -4,7 +4,7 @@
 
 
 
-### mahalah hamishak
+### Game progression
 
 + **Construction** - one can build houses, roads and settelments:
 

@@ -11,6 +11,8 @@ namespace catan
     class PromotionCard : public catan::Card
     {
         public:
+            PromotionCard() {};
+            virtual ~PromotionCard() {};
             virtual void useCard(Catan *game, Player *player) = 0;
     };
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include <string>
+using std::string;
 
 
 namespace catan
@@ -21,7 +22,7 @@ namespace catan
 
         public:
             Card() = default;
-            virtual ~Card();
+            virtual ~Card() {};
 
 
             virtual CARDTYPE getType() const = 0;

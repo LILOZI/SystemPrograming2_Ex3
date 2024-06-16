@@ -2,7 +2,8 @@
 
 CXX = clang++
 CXXFLAGS = -std=c++11 -Wsign-conversion -g
-SOURCEOBJ = Catan.o Player.o Land.o LandVertex.o main.o LandEdge.o
+CATANOBJ = Catan.o Player.o Land.o LandVertex.o main.o LandEdge.o  $(addprefix cards/, $(CARDSOBJ))
+CARDSOBJ = MonopolyCard.o RoadBuildingCard.o YearOfPlentyCard.o KnightCard.o VictoryPointCard.o
 TESTOBJ = Test.o TestCounter.o Catan.o Player.o Land.o LandVertex.o LandEdge.o
 VALGRIND_FLAGS=-v --leak-check=full --show-leak-kinds=all  --error-exitcode=99
 
@@ -12,8 +13,8 @@ test: $(TESTOBJ)
 	$(CXX) $(CXXFLAGS) $(TESTOBJ) -o test
 	./test
 
-Catan: $(SOURCEOBJ)
-	$(CXX) $(CXXFLAGS) $(SOURCEOBJ) -o Catan
+Catan: $(CATANOBJ)
+	$(CXX) $(CXXFLAGS) $(CATANOBJ) -o Catan
 
 Catan.o : Catan.cpp Catan.hpp
 	$(CXX) $(CXXFLAGS) -c Catan.cpp

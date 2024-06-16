@@ -14,7 +14,7 @@ using std::cout;
 using std::endl;
 using std::pair;
 
-class Card;
+#include "cards/Card.hpp"
 
 namespace catan
 {
@@ -42,10 +42,10 @@ namespace catan
             {};        
             ~Player();
             
-            /**
-             *@brief overloaded assignment operator 
-            **/
-            Player& operator=(const Player& other);
+            // /**
+            //  *@brief overloaded assignment operator 
+            // **/
+            // Player& operator=(const Player& other);
 
             void addVictoryPoints(int points) { this->victoryPoints += points; };
 
@@ -62,7 +62,7 @@ namespace catan
             void addDevCard(Card* card);
             void removeDevCard(Card* card);
 
-            int drawDevCard(Catan* game);
+            int buyDevCard(Catan *game);
 
             void buySettlement(bool round0);
             void buyCity();
@@ -76,6 +76,12 @@ namespace catan
             void discardResources(int resourceTotal);
 
             void displayResources() const;
+
+            void displayDevCards() const;
+
+            int playDevCard(Catan* game);
+
+            int trade(Catan* game);
 
             /**
              * @brief Get the amount of victory points a player holds.

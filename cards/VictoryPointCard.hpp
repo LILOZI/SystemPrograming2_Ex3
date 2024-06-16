@@ -4,15 +4,14 @@
 
 #include "Card.hpp"
 
-
 namespace catan
 {
-    class KnightCard : public catan::Card
+    class VictoryPointCard : public catan::Card
     {
         public:
-            KnightCard() {};
-            ~KnightCard() {};
-            KnightCard(const KnightCard &other) = default;
+            VictoryPointCard() {};
+            ~VictoryPointCard() {};
+            VictoryPointCard(const VictoryPointCard &other) = default;
 
             CARDTYPE getType() const override;
             string getDescription() const override;

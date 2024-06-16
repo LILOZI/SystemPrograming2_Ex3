@@ -1,7 +1,5 @@
 // @author: oz.atar@msmail.ariel.ac.il
 
-#pragma once
-
 #include "RoadBuildingCard.hpp"
 
 

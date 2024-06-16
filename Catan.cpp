@@ -1,6 +1,11 @@
 // @author: oz.atar@msmail.ariel.ac.il
 
 #include "Catan.hpp"
+#include "cards/MonopolyCard.hpp"
+#include "cards/RoadBuildingCard.hpp"
+#include "cards/YearOfPlentyCard.hpp"
+#include "cards/KnightCard.hpp"
+#include "cards/VictoryPointCard.hpp"
 
 catan::Catan::Catan(Player &player1, Player &player2, Player &player3) 
 : players{&player1, &player2, &player3}, board(19), landNum()
@@ -18,7 +23,7 @@ catan::Catan::Catan(Player &player1, Player &player2, Player &player3)
 }
 
 catan::Catan::Catan(Player &player1, Player &player2, Player &player3, uint seed) 
-: players{&player1, &player2, &player3}, board(19), landNum()
+: players{&player1, &player2, &player3}, board(19), devCardsDeck((5), std::make_pair(nullptr, 0)), landNum()
 {   
     srand(seed);
     curPlayer = 0;
@@ -101,7 +106,16 @@ catan::Catan::~Catan()
 void catan::Catan::init()
 {
     initBoard();
-    // initDevCards();
+    initDevCards();
+}
+
+void catan::Catan::initDevCards()
+{
+    devCardsDeck[0] = make_pair(new MonopolyCard(), -1);
+    devCardsDeck[1] = make_pair(new RoadBuildingCard(), -1);
+    devCardsDeck[2] = make_pair(new YearOfPlentyCard(), -1);
+    devCardsDeck[3] = make_pair(new KnightCard(), -1);
+    devCardsDeck[4] = make_pair(new VictoryPointCard(), -1);
 }
 
 void catan::Catan::initBoard()
@@ -703,7 +717,35 @@ catan::Player* catan::Catan::start()
     {
         playTurn();
     }
+    cout << winner->getName() << " has won the game!" << endl;
     return winner;
+}
+
+int catan::Catan::trade(Player* sender, Player *receiver, int giveRes, int giveAmount, int receiveRes, int receiveAmount)
+{
+    cout << sender->getName() << " wants to trade " << giveAmount << " " << this->intToResource(giveRes) << " for " << receiveAmount << " " << this->intToResource(receiveRes) << " with " << receiver->getName() << endl;
+    cout << receiver->getName() << " do you accept the trade? (y/n)" << endl;
+    char response;
+    cin >> response;
+    if(response == 'y')
+    {
+        if(sender->getResource(giveRes) < giveAmount || receiver->getResource(receiveRes) < receiveAmount)
+        {
+            cout << "Trade failed" << endl;
+            return -1;
+        }
+        sender->removeResource(giveRes, giveAmount);
+        receiver->addResource(giveRes, giveAmount);
+        receiver->removeResource(receiveRes, receiveAmount);
+        sender->addResource(receiveRes, receiveAmount);
+        cout << "Trade successful" << endl;
+        return 0;
+    }
+    else
+    {
+        cout << "Trade declined" << endl;
+        return -2;
+    }
 }
 
 void catan::Catan::playTurn()
@@ -819,23 +861,19 @@ int catan::Catan::placeRoad(Player* player, size_t landNum, size_t edgeIndex)
 
 int catan::Catan::buyDevCard(Player *player)
 {
-    if(player->getResource(BRICK) < 1 || player->getResource(WOOD) < 1 || player->getResource(WOOL) < 1)
+    if(player->getResource(WHEAT) < 1 || player->getResource(WOOL) < 1 || player->getResource(IRON) < 1)
     {
         // not enough resources
         return -1;
     }
-    player->addResource(BRICK, -1);
-    player->addResource(WOOD, -1);
-    player->addResource(WOOL, -1);;
+    player->removeResource(WHEAT, 1);
+    player->removeResource(WOOL, 1);
+    player->removeResource(IRON, 1);
     return 0;
 }
 
 catan::Card* catan::Catan::drawDevCard(Player* player)
 {
-    if(this->buyDevCard(player) == -1)
-    {
-        return nullptr;
-    }
     size_t index = (size_t)rand() % 6;
     while(this->devCardsDeck[index].second == 0)
     {
@@ -843,7 +881,7 @@ catan::Card* catan::Catan::drawDevCard(Player* player)
     }
     if(this->devCardsDeck[index].second > 0)
     {
-        player->addVictoryPoints(1);
+        this->devCardsDeck[index].second--;
     }
     return this->devCardsDeck[index].first->clone();
 }

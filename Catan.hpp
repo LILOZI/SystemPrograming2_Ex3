@@ -15,6 +15,7 @@ using std::endl;
 using std::set;
 using std::pair;
 using std::cin;
+using std::make_pair;
 
 #include <algorithm>
 
@@ -81,8 +82,6 @@ namespace catan
          * @brief For each vertex and edge, set the adjacent vertices and edges. 
         **/
         void setVxsAndEdges();
-
-        int buyDevCard(Player *player);
     
         int getLandIndex(Land* land);
 
@@ -126,6 +125,10 @@ namespace catan
             **/
             vector<Land*> getBoard() { return this->board; }
 
+            vector<Player*> getPlayers() {return this->players;};
+
+            int trade(Player* sender, Player *receiver, int giveRes, int giveAmount, int receiveRes, int receiveAmount);
+
             int placeSettlement(Player *player, size_t landNum,size_t vertexIndex, bool round0);
             int placeCity(Player *player, size_t landNum, size_t vertexIndex);
             int placeRoad(Player *player, size_t landNum, size_t edgeIndex);
@@ -139,6 +142,8 @@ namespace catan
             string intToResource(int resourceType);
 
             void displayPlayersResources();
+
+            int buyDevCard(Player *player);
 
     };
 }

@@ -14,7 +14,7 @@ namespace catan
             RoadBuildingCard(const RoadBuildingCard &other) = default;
 
             CARDTYPE getType() const override;
-            std::string getDescription() const override;
+            string getDescription() const override;
             void useCard(Catan *game, Player *player) override;
             Card* clone() override;
     };

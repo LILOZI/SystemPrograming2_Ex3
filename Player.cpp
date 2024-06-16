@@ -228,12 +228,17 @@ int catan::Player::getTotalResources() const
 
 void catan::Player::displayResources() const
 {
-    cout << "Resources:" << endl;
+    cout << this->getName() << " Resources:" << endl;
     cout << "BRICK: " << this->resources[0] << endl;
     cout << "WOOD: " << this->resources[1] << endl;
     cout << "WHEAT: " << this->resources[2] << endl;
-    cout << "SHEEP: " << this->resources[3] << endl;
+    cout << "WOOL: " << this->resources[3] << endl;
     cout << "IRON: " << this->resources[4] << endl;
+}
+
+string catan::Player::getName() const
+{
+    return this->getColor() + this->name + "\033[0m";
 }
 
 void catan::Player::discardResources(int resourceTotal)
@@ -242,7 +247,7 @@ void catan::Player::discardResources(int resourceTotal)
     while(toDiscard > 0)
     {
         cout << "You must discard " << toDiscard << " resources." << endl;
-        cout << "0 = BRICK, 1 = WOOD, 2 = WHEAT, 3 = SHEEP, 4 = IRON" << endl;
+        cout << "0 = BRICK, 1 = WOOD, 2 = WHEAT, 3 = WOOL, 4 = IRON" << endl;
         cout << "Enter the number of the resource you want to discard: ";
         int resourceType;
         cin >> resourceType;
@@ -353,13 +358,16 @@ void catan::Player::playTurn(Catan *game)
         switch(op)
         {
             case '1':
-                this->placeSettlement(game, false);
+                if(this->placeSettlement(game, false) == 0)
+                {return;}
                 break;
             case '2':
-                this->placeCity(game);
+                if(this->placeCity(game) == 0)
+                {return;}
                 break;
             case '3':
-                this->placeRoad(game, false);
+                if(this->placeRoad(game, false) == 0)
+                {return;}
                 break;
             case '4':
                 // this->buyDevCard();
@@ -371,7 +379,7 @@ void catan::Player::playTurn(Catan *game)
                 // this->trade();
                 break;
             case 'B':
-                // game->displayBoard();
+                game->displayBoard();
                 break;
             case 'R':
                 this->displayResources();

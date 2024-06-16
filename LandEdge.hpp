@@ -14,7 +14,6 @@ using std::string;
 
 namespace catan
 {
-    // class Player;
     class LandEdge
     {
         private:

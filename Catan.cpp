@@ -189,7 +189,7 @@ void catan::Catan::playRound0()
     for(size_t i = 0; i < MAX_PLAYERS; i++)
     {
         this->displayBoard();
-        cout << this->players[i]->getColor() << this->players[i]->getName() << " \033[0mturn to place a settlement and a road" << endl;
+        cout << this->players[i]->getName() << " turn to place a settlement and a road" << endl;
         this->players[i]->placeSettlement(this, true);
         this->players[i]->placeRoad(this, true);
     }
@@ -197,7 +197,7 @@ void catan::Catan::playRound0()
     for(size_t i = 0; i < MAX_PLAYERS; i++)
     {
         this->displayBoard();
-        cout << this->players[i]->getColor() << this->players[i]->getName() << " \033[0mturn to place a settlement and a road" << endl;
+        cout << this->players[i]->getName() << " turn to place a settlement and a road" << endl;
         this->players[i]->placeSettlement(this, true);
         this->players[i]->placeRoad(this, true);
     }
@@ -710,7 +710,7 @@ void catan::Catan::playTurn()
 {
     this->displayBoard();
     Player* currentPlayer = players[(size_t)this->curPlayer]; 
-    cout << currentPlayer->getColor() << currentPlayer->getName() << " \033[0mturn" << endl;
+    cout << currentPlayer->getName() << " turn" << endl;
     currentPlayer->playTurn(this);
     this->curPlayer = (this->curPlayer + 1) % 3;
 }   
@@ -815,6 +815,80 @@ int catan::Catan::placeRoad(Player* player, size_t landNum, size_t edgeIndex)
     }
     this->board[landNum]->getEdge(edgeIndex)->placeRoad(player);
     return 0;
+}
+
+int catan::Catan::buyDevCard(Player *player)
+{
+    if(player->getResource(BRICK) < 1 || player->getResource(WOOD) < 1 || player->getResource(WOOL) < 1)
+    {
+        // not enough resources
+        return -1;
+    }
+    player->addResource(BRICK, -1);
+    player->addResource(WOOD, -1);
+    player->addResource(WOOL, -1);;
+    return 0;
+}
+
+catan::Card* catan::Catan::drawDevCard(Player* player)
+{
+    if(this->buyDevCard(player) == -1)
+    {
+        return nullptr;
+    }
+    size_t index = (size_t)rand() % 6;
+    while(this->devCardsDeck[index].second == 0)
+    {
+        index = (size_t)rand() % 6;
+    }
+    if(this->devCardsDeck[index].second > 0)
+    {
+        player->addVictoryPoints(1);
+    }
+    return this->devCardsDeck[index].first->clone();
+}
+
+void catan::Catan::takeOthersResources(Player* player, int resource)
+{
+    for(size_t i = 0; i < MAX_PLAYERS; i++)
+    {
+        int amount = 0;
+        if(this->players[i] != player)
+        {
+
+            amount = this->players[i]->getResource(resource);
+            player->addResource(resource, amount);
+            this->players[i]->removeResource(resource, amount);  
+            cout << player->getName() << " has taken " << amount << " " << this->intToResource(resource) << " from " << this->players[i]->getName() << "" << endl;
+        }
+    }
+}
+
+void catan::Catan::displayPlayersResources()
+{
+    for(size_t i = 0; i < MAX_PLAYERS; i++)
+    {
+        this->players[i]->displayResources();
+    }
+}
+
+string catan::Catan::intToResource(int resource)
+{
+    switch(resource)
+    {
+        case BRICK:
+            return "brick";
+        case WOOD:
+            return "wood";
+        case WOOL:
+            return "wool";
+        case WHEAT:
+            return "wheat";
+        case IRON:
+            return "rock";
+        default:
+            return "invalid resource";
+    }
 }
 
 void catan::Catan::displayBoard()

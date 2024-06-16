@@ -1,0 +1,144 @@
+Edge 0 vertices: 0 1
+Edge 0 adjacent edges: 1 5 nullptr nullptr 
+Edge 1 vertices: 1 2
+Edge 1 adjacent edges: 16 2 0 nullptr 
+Edge 2 vertices: 2 3
+Edge 2 adjacent edges: 1 16 20 3 
+Edge 3 vertices: 3 4
+Edge 3 adjacent edges: 2 20 7 4 
+Edge 4 vertices: 4 5
+Edge 4 adjacent edges: 5 3 7 6 
+Edge 5 vertices: 5 0
+Edge 5 adjacent edges: 0 4 6 nullptr 
+Edge 6 vertices: 6 5
+Edge 6 adjacent edges: 5 4 10 nullptr 
+Edge 7 vertices: 4 7
+Edge 7 adjacent edges: 4 3 23 8 
+Edge 8 vertices: 7 8
+Edge 8 adjacent edges: 7 23 12 9 
+Edge 9 vertices: 8 9
+Edge 9 adjacent edges: 10 8 12 11 
+Edge 10 vertices: 9 6
+Edge 10 adjacent edges: 6 9 11 nullptr 
+Edge 11 vertices: 10 9
+Edge 11 adjacent edges: 10 9 15 nullptr 
+Edge 12 vertices: 8 11
+Edge 12 adjacent edges: 9 8 26 13 
+Edge 13 vertices: 11 12
+Edge 13 adjacent edges: 12 26 30 14 
+Edge 14 vertices: 12 13
+Edge 14 adjacent edges: 15 13 30 nullptr 
+Edge 15 vertices: 13 10
+Edge 15 adjacent edges: 11 14 nullptr nullptr 
+Edge 16 vertices: 2 14
+Edge 16 adjacent edges: 1 17 2 nullptr 
+Edge 17 vertices: 14 15
+Edge 17 adjacent edges: 31 18 16 nullptr 
+Edge 18 vertices: 15 16
+Edge 18 adjacent edges: 17 31 35 19 
+Edge 19 vertices: 16 17
+Edge 19 adjacent edges: 18 35 21 20 
+Edge 20 vertices: 17 3
+Edge 20 adjacent edges: 2 19 21 3 
+Edge 21 vertices: 17 18
+Edge 21 adjacent edges: 20 19 38 22 
+Edge 22 vertices: 18 19
+Edge 22 adjacent edges: 21 38 24 23 
+Edge 23 vertices: 19 7
+Edge 23 adjacent edges: 7 22 24 8 
+Edge 24 vertices: 19 20
+Edge 24 adjacent edges: 23 22 41 25 
+Edge 25 vertices: 20 21
+Edge 25 adjacent edges: 24 41 27 26 
+Edge 26 vertices: 21 11
+Edge 26 adjacent edges: 12 25 27 13 
+Edge 27 vertices: 21 22
+Edge 27 adjacent edges: 26 25 44 28 
+Edge 28 vertices: 22 23
+Edge 28 adjacent edges: 27 44 48 29 
+Edge 29 vertices: 23 24
+Edge 29 adjacent edges: 30 28 48 nullptr 
+Edge 30 vertices: 24 12
+Edge 30 adjacent edges: 14 13 29 nullptr 
+Edge 31 vertices: 15 25
+Edge 31 adjacent edges: 17 32 18 nullptr 
+Edge 32 vertices: 25 26
+Edge 32 adjacent edges: 33 31 nullptr nullptr 
+Edge 33 vertices: 26 27
+Edge 33 adjacent edges: 32 49 34 nullptr 
+Edge 34 vertices: 27 28
+Edge 34 adjacent edges: 33 49 36 35 
+Edge 35 vertices: 28 16
+Edge 35 adjacent edges: 18 34 36 19 
+Edge 36 vertices: 28 29
+Edge 36 adjacent edges: 35 34 52 37 
+Edge 37 vertices: 29 30
+Edge 37 adjacent edges: 36 52 39 38 
+Edge 38 vertices: 30 18
+Edge 38 adjacent edges: 21 37 39 22 
+Edge 39 vertices: 30 31
+Edge 39 adjacent edges: 38 37 55 40 
+Edge 40 vertices: 31 32
+Edge 40 adjacent edges: 39 55 42 41 
+Edge 41 vertices: 32 20
+Edge 41 adjacent edges: 24 40 42 25 
+Edge 42 vertices: 32 33
+Edge 42 adjacent edges: 41 40 58 43 
+Edge 43 vertices: 33 34
+Edge 43 adjacent edges: 42 58 45 44 
+Edge 44 vertices: 34 22
+Edge 44 adjacent edges: 27 43 45 28 
+Edge 45 vertices: 34 35
+Edge 45 adjacent edges: 44 43 61 46 
+Edge 46 vertices: 35 36
+Edge 46 adjacent edges: 45 61 47 nullptr 
+Edge 47 vertices: 36 37
+Edge 47 adjacent edges: 48 46 nullptr nullptr 
+Edge 48 vertices: 37 23
+Edge 48 adjacent edges: 29 28 47 nullptr 
+Edge 49 vertices: 27 38
+Edge 49 adjacent edges: 33 50 34 nullptr 
+Edge 50 vertices: 38 39
+Edge 50 adjacent edges: 49 62 51 nullptr 
+Edge 51 vertices: 39 40
+Edge 51 adjacent edges: 50 62 53 52 
+Edge 52 vertices: 40 29
+Edge 52 adjacent edges: 36 51 53 37 
+Edge 53 vertices: 40 41
+Edge 53 adjacent edges: 52 51 65 54 
+Edge 54 vertices: 41 42
+Edge 54 adjacent edges: 53 65 56 55 
+Edge 55 vertices: 42 31
+Edge 55 adjacent edges: 39 54 56 40 
+Edge 56 vertices: 42 43
+Edge 56 adjacent edges: 55 54 68 57 
+Edge 57 vertices: 43 44
+Edge 57 adjacent edges: 56 68 59 58 
+Edge 58 vertices: 44 33
+Edge 58 adjacent edges: 42 57 59 43 
+Edge 59 vertices: 44 45
+Edge 59 adjacent edges: 58 57 71 60 
+Edge 60 vertices: 45 46
+Edge 60 adjacent edges: 59 71 61 nullptr 
+Edge 61 vertices: 46 35
+Edge 61 adjacent edges: 45 60 46 nullptr 
+Edge 62 vertices: 39 47
+Edge 62 adjacent edges: 50 63 51 nullptr 
+Edge 63 vertices: 47 48
+Edge 63 adjacent edges: 62 64 nullptr nullptr 
+Edge 64 vertices: 48 49
+Edge 64 adjacent edges: 63 66 65 nullptr 
+Edge 65 vertices: 49 41
+Edge 65 adjacent edges: 53 64 66 54 
+Edge 66 vertices: 49 50
+Edge 66 adjacent edges: 65 64 67 nullptr 
+Edge 67 vertices: 50 51
+Edge 67 adjacent edges: 66 69 68 nullptr 
+Edge 68 vertices: 51 43
+Edge 68 adjacent edges: 56 67 69 57 
+Edge 69 vertices: 51 52
+Edge 69 adjacent edges: 68 67 70 nullptr 
+Edge 70 vertices: 52 53
+Edge 70 adjacent edges: 69 71 nullptr nullptr 
+Edge 71 vertices: 53 45
+Edge 71 adjacent edges: 59 70 60 nullptr 

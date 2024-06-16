@@ -22,7 +22,7 @@ using std::cin;
 
 #include "Player.hpp"
 #include "Land.hpp"
-#include "Card.hpp"
+#include "cards/Card.hpp"
 #include "LandVertex.hpp"
 #include "LandEdge.hpp"
 
@@ -37,7 +37,7 @@ namespace catan
         BRICK,
         WOOD,
         WHEAT,
-        SHEEP,
+        WOOL,
         IRON,
         DESERT
     };
@@ -49,7 +49,8 @@ namespace catan
             int curPlayer;
             vector<Player*> players;
             vector<Land*> board;
-            // vector<Card*> devCardsDeck;
+            vector<pair<Card*, int>> devCardsDeck; // how many of each card are left in the deck -1 is unlimited, 0 is none
+            // 0 = MONOPOLY, 1 = ROAD_BUILDING, 2 = YEAR_OF_PLENTY 3 = KNIGHT, 4 = VICTORY_POINT
             map<int, vector<Land*>> landNum; // "equivalence classes" of lands with the same number
 
         /**
@@ -81,8 +82,8 @@ namespace catan
         **/
         void setVxsAndEdges();
 
-        
-
+        int buyDevCard(Player *player);
+    
         int getLandIndex(Land* land);
 
         public:
@@ -130,6 +131,14 @@ namespace catan
             int placeRoad(Player *player, size_t landNum, size_t edgeIndex);
 
             void displayBoard();
+
+            Card* drawDevCard(Player* player);
+
+            void takeOthersResources(Player* player, int resourceType);
+
+            string intToResource(int resourceType);
+
+            void displayPlayersResources();
 
     };
 }

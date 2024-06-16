@@ -66,7 +66,7 @@ int catan::Land::getResourceInt() const
     {
         return 2;
     }
-    else if(this->resource == "SHEEP")
+    else if(this->resource == "WOOL")
     {
         return 3;
     }
@@ -125,7 +125,7 @@ void catan::Land::setResource(int resourceType)
             this->resource = "WHEAT";
             break;
         case 3:
-            this->resource = "SHEEP";
+            this->resource = "WOOL";
             break;
         case 4:
             this->resource = "IRON";
@@ -162,7 +162,7 @@ string catan::Land::getLandSymbol() const {
         return "🌲";
     } else if (this->resource == "BRICK") {
         return "🧱";
-    } else if (this->resource == "SHEEP") {
+    } else if (this->resource == "WOOL") {
         return "🐑";
     } else if (this->resource == "WHEAT") {
         return "🌾";
@@ -189,7 +189,7 @@ size_t catan::Land::getResourceNum() const
     {
         return 2;
     }
-    else if(this->resource == "SHEEP")
+    else if(this->resource == "WOOL")
     {
         return 3;
     }

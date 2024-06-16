@@ -1,0 +1,108 @@
+Vertex 0 neighbors: 1 5 nullptr 
+Vertex 0 incident edges: 0 5 nullptr 
+Vertex 1 neighbors: 2 0 nullptr 
+Vertex 1 incident edges: 1 0 nullptr 
+Vertex 2 neighbors: 1 14 3 
+Vertex 2 incident edges: 1 16 2 
+Vertex 3 neighbors: 2 17 4 
+Vertex 3 incident edges: 2 20 3 
+Vertex 4 neighbors: 5 3 7 
+Vertex 4 incident edges: 4 3 7 
+Vertex 5 neighbors: 0 4 6 
+Vertex 5 incident edges: 5 4 6 
+Vertex 6 neighbors: 5 9 nullptr 
+Vertex 6 incident edges: 6 10 nullptr 
+Vertex 7 neighbors: 4 19 8 
+Vertex 7 incident edges: 7 23 8 
+Vertex 8 neighbors: 9 7 11 
+Vertex 8 incident edges: 9 8 12 
+Vertex 9 neighbors: 6 8 10 
+Vertex 9 incident edges: 10 9 11 
+Vertex 10 neighbors: 9 13 nullptr 
+Vertex 10 incident edges: 11 15 nullptr 
+Vertex 11 neighbors: 8 21 12 
+Vertex 11 incident edges: 12 26 13 
+Vertex 12 neighbors: 13 11 24 
+Vertex 12 incident edges: 14 13 30 
+Vertex 13 neighbors: 10 12 nullptr 
+Vertex 13 incident edges: 15 14 nullptr 
+Vertex 14 neighbors: 15 2 nullptr 
+Vertex 14 incident edges: 17 16 nullptr 
+Vertex 15 neighbors: 14 25 16 
+Vertex 15 incident edges: 17 31 18 
+Vertex 16 neighbors: 15 28 17 
+Vertex 16 incident edges: 18 35 19 
+Vertex 17 neighbors: 3 16 18 
+Vertex 17 incident edges: 20 19 21 
+Vertex 18 neighbors: 17 30 19 
+Vertex 18 incident edges: 21 38 22 
+Vertex 19 neighbors: 7 18 20 
+Vertex 19 incident edges: 23 22 24 
+Vertex 20 neighbors: 19 32 21 
+Vertex 20 incident edges: 24 41 25 
+Vertex 21 neighbors: 11 20 22 
+Vertex 21 incident edges: 26 25 27 
+Vertex 22 neighbors: 21 34 23 
+Vertex 22 incident edges: 27 44 28 
+Vertex 23 neighbors: 24 22 37 
+Vertex 23 incident edges: 29 28 48 
+Vertex 24 neighbors: 12 23 nullptr 
+Vertex 24 incident edges: 30 29 nullptr 
+Vertex 25 neighbors: 26 15 nullptr 
+Vertex 25 incident edges: 32 31 nullptr 
+Vertex 26 neighbors: 25 27 nullptr 
+Vertex 26 incident edges: 32 33 nullptr 
+Vertex 27 neighbors: 26 38 28 
+Vertex 27 incident edges: 33 49 34 
+Vertex 28 neighbors: 16 27 29 
+Vertex 28 incident edges: 35 34 36 
+Vertex 29 neighbors: 28 40 30 
+Vertex 29 incident edges: 36 52 37 
+Vertex 30 neighbors: 18 29 31 
+Vertex 30 incident edges: 38 37 39 
+Vertex 31 neighbors: 30 42 32 
+Vertex 31 incident edges: 39 55 40 
+Vertex 32 neighbors: 20 31 33 
+Vertex 32 incident edges: 41 40 42 
+Vertex 33 neighbors: 32 44 34 
+Vertex 33 incident edges: 42 58 43 
+Vertex 34 neighbors: 22 33 35 
+Vertex 34 incident edges: 44 43 45 
+Vertex 35 neighbors: 34 46 36 
+Vertex 35 incident edges: 45 61 46 
+Vertex 36 neighbors: 37 35 nullptr 
+Vertex 36 incident edges: 47 46 nullptr 
+Vertex 37 neighbors: 23 36 nullptr 
+Vertex 37 incident edges: 48 47 nullptr 
+Vertex 38 neighbors: 27 39 nullptr 
+Vertex 38 incident edges: 49 50 nullptr 
+Vertex 39 neighbors: 38 47 40 
+Vertex 39 incident edges: 50 62 51 
+Vertex 40 neighbors: 29 39 41 
+Vertex 40 incident edges: 52 51 53 
+Vertex 41 neighbors: 40 49 42 
+Vertex 41 incident edges: 53 65 54 
+Vertex 42 neighbors: 31 41 43 
+Vertex 42 incident edges: 55 54 56 
+Vertex 43 neighbors: 42 51 44 
+Vertex 43 incident edges: 56 68 57 
+Vertex 44 neighbors: 33 43 45 
+Vertex 44 incident edges: 58 57 59 
+Vertex 45 neighbors: 44 53 46 
+Vertex 45 incident edges: 59 71 60 
+Vertex 46 neighbors: 35 45 nullptr 
+Vertex 46 incident edges: 61 60 nullptr 
+Vertex 47 neighbors: 39 48 nullptr 
+Vertex 47 incident edges: 62 63 nullptr 
+Vertex 48 neighbors: 47 49 nullptr 
+Vertex 48 incident edges: 63 64 nullptr 
+Vertex 49 neighbors: 41 48 50 
+Vertex 49 incident edges: 65 64 66 
+Vertex 50 neighbors: 49 51 nullptr 
+Vertex 50 incident edges: 66 67 nullptr 
+Vertex 51 neighbors: 43 50 52 
+Vertex 51 incident edges: 68 67 69 
+Vertex 52 neighbors: 51 53 nullptr 
+Vertex 52 incident edges: 69 70 nullptr 
+Vertex 53 neighbors: 45 52 nullptr 
+Vertex 53 incident edges: 71 70 nullptr 

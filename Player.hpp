@@ -12,6 +12,7 @@ using std::vector;
 using std::string;
 using std::cout;
 using std::endl;
+using std::pair;
 
 class Card;
 
@@ -30,14 +31,14 @@ namespace catan
             string name;            
             int color;
             int victoryPoints;
-            int resources[5]; // 0 = brick, 1 = wood, 2 = wheat, 3 = sheep, 4 = iron
-            int constructions[3] = {0}; // 0 = road, 1 = settlement, 2 = city
-            // vector<Card*> devCards;
+            int resources[5]; // 0 = brick, 1 = wood, 2 = wheat, 3 = wool, 4 = iron
+            int constructions[3]; // 0 = road, 1 = settlement, 2 = city
+            vector<pair<Card*, int>> devCards;  // 0 = MONOPOLY, 1 = ROAD_BUILDING, 2 = YEAR_OF_PLENTY 3 = KNIGHT, 4 = VICTORY_POINT
 
         public:
             Player() {};
             Player(std::string name, int color) : name(name), color(color), 
-            victoryPoints(0), resources{0}
+            victoryPoints(0), resources{0}, constructions{0}, devCards((5), std::make_pair(nullptr, 0))
             {};        
             ~Player();
             
@@ -60,6 +61,8 @@ namespace catan
             int getResource(int resourceType) { return this->resources[resourceType]; };
             void addDevCard(Card* card);
             void removeDevCard(Card* card);
+
+            int drawDevCard(Catan* game);
 
             void buySettlement(bool round0);
             void buyCity();
@@ -87,13 +90,13 @@ namespace catan
             /** 
              * @brief Get the name of the player
             **/
-            string getName() {
-                if (this->name.empty()){throw std::invalid_argument("Player not initialized");}
-                return this->name + this->getColor();}
+            string getName() const;
+                // if (this->name.empty()){throw std::invalid_argument("Player not initialized");}
+                
 
             string getColor() const;
 
-            bool operator==(const Player& other) const;
-            bool operator!=(const Player& other) const;
+            // bool operator==(const Player& other) const;
+            // bool operator!=(const Player& other) const;
     };
 }

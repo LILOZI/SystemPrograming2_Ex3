@@ -25,6 +25,7 @@ namespace catan
             int id;
             vector<LandVertex*> neighbors;
             vector<LandEdge*> incidentEdges;
+            vector<int> resources;
             Player* owner;
             bool isSettlement;
 
@@ -32,14 +33,10 @@ namespace catan
             void setOwner(Player* owner) { this->owner = owner; };
             void setSettlement(bool isSettlement) { this->isSettlement = isSettlement; };
         public:
-            LandVertex() {};
+            LandVertex(){};
             ~LandVertex();
-
-            LandVertex(const LandVertex& other);
             LandVertex(int id);
 
-            LandVertex& operator=(const LandVertex& other);
-            
             void clearNeighbors() { this->neighbors.clear();}; 
             void clearIncidentEdges() { this->incidentEdges.clear();};
 
@@ -73,7 +70,8 @@ namespace catan
 
             int getId() { return this->id; };
 
-            
+            void setREsource(int resourceType) { this->resources.push_back(resourceType); };
+            vector<int> getResources() { return this->resources; };
 
     };
 }

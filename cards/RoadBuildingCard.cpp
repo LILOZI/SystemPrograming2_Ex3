@@ -2,9 +2,6 @@
 
 #include "RoadBuildingCard.hpp"
 
-
-// catan::RoadBuildingCard::RoadBuildingCard() {}
-
 std::string catan::RoadBuildingCard::getDescription() const
 {
     return "Road Building Card: Build 2 roads for free";

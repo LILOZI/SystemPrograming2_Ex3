@@ -35,82 +35,6 @@ catan::Land::~Land()
     }
 };
 
-catan::Land::Land(const Land& other)
-{
-    this->id = other.id;
-    for(size_t i = 0; i< 5; i++)
-    {
-        this->resource[i] = other.resource[i];
-    }
-    for(size_t i = 0; i < other.vertices.size(); i++)
-    {
-        this->vertices.push_back(other.vertices[i]);
-    }
-    for(size_t i = 0; i < other.edges.size(); i++)
-    {
-        this->edges.push_back(other.edges[i]);
-    }
-}
-
-int catan::Land::getResourceInt() const
-{
-    if(this->resource == "BRICK")
-    {
-        return 0;
-    }
-    else if(this->resource == "WOOD")
-    {
-        return 1;
-    }
-    else if(this->resource == "WHEAT")
-    {
-        return 2;
-    }
-    else if(this->resource == "WOOL")
-    {
-        return 3;
-    }
-    else if(this->resource == "IRON")
-    {
-        return 4;
-    }
-    else if(this->resource == "DESERT")
-    {
-        return 5;
-    }
-    return 6;
-}
-
-catan::Land& catan::Land::operator=(const Land& other)
-{
-    if(this == &other)
-    {
-        return *this;
-    }
-    this->id = other.id;
-    for(size_t i = 0; i< 5; i++)
-    {
-        this->resource[i] = other.resource[i];
-    }
-    // for(size_t i = 0; i < this->vertices.size(); i++)
-    // {
-        // if(this->vertices[i] != nullptr){delete this->vertices[i];}
-    // }
-    // for(size_t i = 0; i < this->edges.size(); i++)
-    // {
-        // if(this->edges[i] != nullptr){delete this->edges[i];}
-    // }
-    for(size_t i = 0; i < other.vertices.size(); i++)
-    {
-        this->vertices.push_back(other.vertices[i]);
-    }
-    for(size_t i = 0; i < other.edges.size(); i++)
-    {
-        this->edges.push_back(other.edges[i]);
-    }
-    return *this;
-}
-
 void catan::Land::setResource(int resourceType)
 {
     switch(resourceType)
@@ -134,8 +58,16 @@ void catan::Land::setResource(int resourceType)
             this->resource = "DESERT";
             break;
     }
+    this->setVerticesResource(resourceType);
 }
 
+void catan::Land::setVerticesResource(int resourceType)
+{
+    for(size_t i = 0; i < this->vertices.size(); i++)
+    {
+        this->vertices[i]->setREsource(resourceType);
+    }
+}
 
 void catan::Land::setVertices(LandVertex* vertex0, LandVertex* vertex1, LandVertex* vertex2, LandVertex* vertex3, LandVertex* vertex4, LandVertex* vertex5)
 {

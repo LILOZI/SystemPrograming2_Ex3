@@ -37,10 +37,7 @@ namespace catan
              * @brief Call these before destructor so it will not try to delete "dangling pointers".
             **/
             void clearVertices() { this->vertices = std::make_pair(nullptr, nullptr);};
-
-            LandEdge(const LandEdge& other);
-            LandEdge& operator=(const LandEdge& other);
-
+            
             void setVertices(LandVertex* vertex0, LandVertex* vertex1);
             void addAdjEdges(LandEdge* edge0, LandEdge* edge1, LandEdge* edge2, LandEdge* edge3);
             

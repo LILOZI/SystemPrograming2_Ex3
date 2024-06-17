@@ -41,11 +41,6 @@ namespace catan
             victoryPoints(0), resources{0}, constructions{0}, devCards((5), std::make_pair(nullptr, 0))
             {};        
             ~Player();
-            
-            // /**
-            //  *@brief overloaded assignment operator 
-            // **/
-            // Player& operator=(const Player& other);
 
             void addVictoryPoints(int points) { this->victoryPoints += points; };
 
@@ -83,6 +78,11 @@ namespace catan
 
             int trade(Catan* game);
 
+            /** 
+             * @brief This is for testing purposes
+            **/
+            vector<pair<Card*, int>> getDevCards() const { return this->devCards; };
+
             /**
              * @brief Get the amount of victory points a player holds.
              * @return the amount of victory points a player holds.
@@ -96,13 +96,9 @@ namespace catan
             /** 
              * @brief Get the name of the player
             **/
-            string getName() const;
-                // if (this->name.empty()){throw std::invalid_argument("Player not initialized");}
-                
+            string getName() const;                
 
             string getColor() const;
 
-            // bool operator==(const Player& other) const;
-            // bool operator!=(const Player& other) const;
     };
 }

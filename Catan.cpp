@@ -8,70 +8,18 @@
 #include "cards/VictoryPointCard.hpp"
 
 catan::Catan::Catan(Player &player1, Player &player2, Player &player3) 
-: players{&player1, &player2, &player3}, board(19), landNum()
+: curPlayer(0), players{&player1, &player2, &player3}, board(19), devCardsDeck((5), std::make_pair(nullptr, 0)), landNum()
 {   
     srand(time(nullptr));
-    curPlayer = 0;
-
-    for(size_t i = 0; i < 19; i++)
-    {
-        board[i] = new Land(i);
-        int num = rand() % 11 + 2;
-        landNum[num].push_back(board[i]);   
-    }
     init();
 }
 
 catan::Catan::Catan(Player &player1, Player &player2, Player &player3, uint seed) 
-: players{&player1, &player2, &player3}, board(19), devCardsDeck((5), std::make_pair(nullptr, 0)), landNum()
+: curPlayer(0), players{&player1, &player2, &player3}, board(19), devCardsDeck((5), std::make_pair(nullptr, 0)), landNum()
 {   
     srand(seed);
-    curPlayer = 0;
-
-    for(size_t i = 0; i < 19; i++)
-    {
-        board[i] = new Land(i);
-        int num = rand() % 11 + 2;
-        landNum[num].push_back(board[i]);   
-    }
     init();
 }
-
-
-// catan::Catan::Catan(const Catan &other)
-// {
-//     this->current_player = other.current_player;
-//     for(size_t i = 0; i < MAX_PLAYERS; i++)
-//     {
-//         this->players[i] = other.players[i];
-//     }
-//     for(size_t i = 0; i < 19; i++)
-//     {
-//         this->board[i] = new Land(*other.board[i]);
-//     }
-// }
-
-// catan::Catan& catan::Catan::operator=(const Catan &other)
-// {
-//     if(this == &other)
-//     {
-//         return *this;
-//     }
-//     this->current_player = other.current_player;
-//     for(size_t i = 0; i < MAX_PLAYERS; i++)
-//     {
-//         this->players[i] = other.players[i];
-//     }
-//     for(size_t i = 0; i < 19; i++)
-//     {
-//         delete this->board[i];
-//     }
-//     for(size_t i = 0; i < 19; i++)
-//     {
-//         this->board[i] = new Land(*other.board[i]);
-//     }
-//     return *this;
-// }
 
 catan::Catan::~Catan()
 {
@@ -100,6 +48,10 @@ catan::Catan::~Catan()
     {
         delete board[i];
     }
+    for(size_t i = 0; i < 5; i++)
+    {
+        delete devCardsDeck[i].first;
+    }
 }
 
 
@@ -114,23 +66,28 @@ void catan::Catan::initDevCards()
     devCardsDeck[0] = make_pair(new MonopolyCard(), -1);
     devCardsDeck[1] = make_pair(new RoadBuildingCard(), -1);
     devCardsDeck[2] = make_pair(new YearOfPlentyCard(), -1);
-    devCardsDeck[3] = make_pair(new KnightCard(), -1);
-    devCardsDeck[4] = make_pair(new VictoryPointCard(), -1);
+    devCardsDeck[3] = make_pair(new KnightCard(), 3);
+    devCardsDeck[4] = make_pair(new VictoryPointCard(), 4);
 }
 
 void catan::Catan::initBoard()
 {   
-    initBoardResources();
+    for(size_t i = 0; i < 19; i++)
+    {
+        board[i] = new Land(i);   
+    }
     createBoardVertices();
     createBoardEdges();
     setVxsAndEdges();
+    initBoardResources();
 }
 
 void catan::Catan::initBoardResources()
 {
     int resource = BRICK;
-    // set at least one land of each resource at a random place
-    for(size_t i = 0; i < 5; i++)
+    int num;
+    // set at least one land of each resource at a random place and give it a random number
+    for(size_t i = 0; i < 6; i++)
     {
         size_t index = (size_t)rand() % 19;
         while(!board[index]->getResource().empty())
@@ -138,16 +95,20 @@ void catan::Catan::initBoardResources()
             index = (size_t)rand() % 19;
         }
         board[index]->setResource(resource);
+        num = rand() % 11 + 2;
+        landNum[num].push_back(board[index]);
         resource++;
     }
     resource = 0;
-    // set random resources for the rest of the lands
+    // set random resources and numbers for the rest of the lands
     for(size_t i = 0; i < 19; i++)
     {
         if(board[i]->getResource().empty())
         {
             resource = (size_t)rand() % 6;
             board[i]->setResource(resource);
+            num = rand() % 11 + 2;
+            landNum[num].push_back(board[i]);
         }
     }
 }
@@ -160,6 +121,7 @@ int catan::Catan::rollDice()
     cout << "Dice 1: " << d1 << " Dice 2: " << d2 << " Sum: " << sum << endl;
     if(sum == 7)
     {
+        this->distributeResources(sum);
         cout << "Dices result is 7, all players with more than 7 resources must discard half of their resources" << endl;
         for(size_t i = 0; i < MAX_PLAYERS; i++)
         {
@@ -173,7 +135,14 @@ int catan::Catan::rollDice()
     else
     {
         // give resources to players
-        for(auto& land : landNum[sum])
+        this->distributeResources(sum);
+    }
+    return sum;
+}
+
+void catan::Catan::distributeResources(int sum)
+{
+    for(auto& land : landNum[sum])
         {
             if(land->getResourceNum() == DESERT)
             {
@@ -194,8 +163,6 @@ int catan::Catan::rollDice()
                 }
             }
         }
-    }
-    return sum;
 }
 
 void catan::Catan::playRound0()
@@ -721,24 +688,97 @@ catan::Player* catan::Catan::start()
     return winner;
 }
 
-int catan::Catan::trade(Player* sender, Player *receiver, int giveRes, int giveAmount, int receiveRes, int receiveAmount)
+int catan::Catan::trade(Player* sender, Player *receiver, vector<int> giveResources, vector<int> recvResources, vector<int> giveCard, vector<int> recvCard)
 {
-    cout << sender->getName() << " wants to trade " << giveAmount << " " << this->intToResource(giveRes) << " for " << receiveAmount << " " << this->intToResource(receiveRes) << " with " << receiver->getName() << endl;
-    cout << receiver->getName() << " do you accept the trade? (y/n)" << endl;
+    cout << sender->getName() << " wants to trade " << endl;
+    for(size_t i = 0; i < giveResources.size(); i++)
+    {
+        cout << giveResources[i] << " of resource type" << i << endl;
+    }
+    cout << " and " << endl;
+    for(size_t i = 0; i < giveCard.size(); i++)
+    {
+        cout << giveCard[i] << " of card type" << i << endl;
+    }
+    cout << "for" << endl;
+    for(size_t i = 0; i < recvResources.size(); i++)
+    {
+        cout << recvResources[i] << " of resource type" << i << endl;
+    }
+    cout << " and " << endl;
+    for(size_t i = 0; i < recvCard.size(); i++)
+    {
+        cout << recvCard[i] << " of card type" << i << endl;
+    }
+    cout << receiver->getName() << " do you accept? (y/n)" << endl;
     char response;
     cin >> response;
     if(response == 'y')
     {
-        if(sender->getResource(giveRes) < giveAmount || receiver->getResource(receiveRes) < receiveAmount)
+        for(size_t i = 0; i < giveResources.size(); i++)
         {
-            cout << "Trade failed" << endl;
-            return -1;
+            if(sender->getResource(i) < giveResources[i])
+            {
+                return -1;
+            }
         }
-        sender->removeResource(giveRes, giveAmount);
-        receiver->addResource(giveRes, giveAmount);
-        receiver->removeResource(receiveRes, receiveAmount);
-        sender->addResource(receiveRes, receiveAmount);
-        cout << "Trade successful" << endl;
+        for(size_t i = 0; i < giveCard.size(); i++)
+        {
+            if(sender->getDevCards()[i].second < giveCard[i])
+            {
+                return -1;
+            }
+        }
+        for(size_t i = 0; i < recvResources.size(); i++)
+        {
+            if(receiver->getResource(i) < recvResources[i])
+            {
+                return -1;
+            }
+        }
+        for(size_t i = 0; i < recvCard.size(); i++)
+        {
+            if(receiver->getDevCards()[i].second < recvCard[i])
+            {
+                return -1;
+            }
+        }
+        for(size_t i = 0; i < giveResources.size(); i++)
+        {
+            sender->removeResource(i, giveResources[i]);
+            receiver->addResource(i, giveResources[i]);
+        }
+        for(size_t i = 0; i < giveCard.size(); i++)
+        {
+            for(size_t j = 0; j < giveCard[i]; j++)
+            {
+                Card* card = sender->getDevCards()[i].first->clone();
+                receiver->addDevCard(card);
+                sender->removeDevCard(card);
+                if(sender->getDevCards()[i].second > 1)
+                {
+                    delete card;
+                }
+            }
+        }
+        for(size_t i = 0; i < recvResources.size(); i++)
+        {
+            receiver->removeResource(i, recvResources[i]);
+            sender->addResource(i, recvResources[i]);
+        }
+        for(size_t i = 0; i < recvCard.size(); i++)
+        {
+            for(size_t j = 0; j < recvCard[i]; j++)
+            {
+                Card* card = receiver->getDevCards()[i].first->clone();
+                sender->addDevCard(card);
+                receiver->removeDevCard(card);
+                if(sender->getDevCards()[i].second > 1)
+                {
+                    delete card;
+                }
+            }
+        }
         return 0;
     }
     else
@@ -746,6 +786,7 @@ int catan::Catan::trade(Player* sender, Player *receiver, int giveRes, int giveA
         cout << "Trade declined" << endl;
         return -2;
     }
+    return -1;
 }
 
 void catan::Catan::playTurn()
@@ -808,12 +849,15 @@ int catan::Catan::placeSettlement(Player* player, size_t landNum, size_t vertexI
     }
     if(round0)
     {
-        int resource = this->board[landNum]->getResourceInt();
-        if(resource != DESERT)
+        vector<int> res = this->board[landNum]->getVertex(vertexIndex)->getResources();
+        for(size_t i = 0; i < res.size(); i++)
         {
-            if(player->getResource(resource) < 1)
+            if(res[i] != DESERT)
             {
-                player->addResource(resource, 1);
+                if(player->getResource(res[i]) < 1)
+                {
+                    player->addResource(res[i], 1);
+                }
             }
         }
     }
@@ -874,14 +918,21 @@ int catan::Catan::buyDevCard(Player *player)
 
 catan::Card* catan::Catan::drawDevCard(Player* player)
 {
-    size_t index = (size_t)rand() % 6;
+    size_t index = (size_t)rand() % 5;
     while(this->devCardsDeck[index].second == 0)
     {
-        index = (size_t)rand() % 6;
+        index = (size_t)rand() % 5;
     }
     if(this->devCardsDeck[index].second > 0)
     {
         this->devCardsDeck[index].second--;
+        if(this->devCardsDeck[index].second == 0)
+        {
+            Card* card = this->devCardsDeck[index].first->clone();
+            delete this->devCardsDeck[index].first;
+            this->devCardsDeck[index].first = nullptr;
+            return card;
+        }
     }
     return this->devCardsDeck[index].first->clone();
 }
@@ -893,7 +944,6 @@ void catan::Catan::takeOthersResources(Player* player, int resource)
         int amount = 0;
         if(this->players[i] != player)
         {
-
             amount = this->players[i]->getResource(resource);
             player->addResource(resource, amount);
             this->players[i]->removeResource(resource, amount);  
@@ -923,7 +973,7 @@ string catan::Catan::intToResource(int resource)
         case WHEAT:
             return "wheat";
         case IRON:
-            return "rock";
+            return "iron";
         default:
             return "invalid resource";
     }

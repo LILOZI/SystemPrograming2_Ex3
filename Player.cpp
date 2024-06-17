@@ -252,9 +252,10 @@ string catan::Player::getName() const
 void catan::Player::discardResources(int resourceTotal)
 {
     int toDiscard = resourceTotal / 2;
+    this->displayResources();
     while(toDiscard > 0)
     {
-        cout << "You must discard " << toDiscard << " resources." << endl;
+        cout << this->getName() << "must discard " << toDiscard << " resources." << endl;
         cout << "0 = BRICK, 1 = WOOD, 2 = WHEAT, 3 = WOOL, 4 = IRON" << endl;
         cout << "Enter the number of the resource you want to discard: ";
         int resourceType;
@@ -270,6 +271,11 @@ void catan::Player::discardResources(int resourceTotal)
         if(amount < 0 || amount > this->resources[resourceType])
         {
             cout << "Amount must be between 0 - " << this->resources[resourceType] << ", please try again." << endl;
+            continue;
+        }
+        if(amount > toDiscard)
+        {
+            cout << "You can only discard " << toDiscard << " resources, please try again." << endl;
             continue;
         }
         this->removeResource(resourceType, amount);
@@ -403,15 +409,37 @@ void catan::Player::playTurn(Catan *game)
 int catan::Player::buyDevCard(Catan *game)
 {
     if(game->buyDevCard(this) == 0)
-    {
-        game->drawDevCard(this);
+    {   
+        Card* card = game->drawDevCard(this);
+        this->addDevCard(card);
+        int cardType = card->getType();
+        if(this->getDevCards()[(size_t)cardType].second > 1)
+        {
+            delete card;
+        }
+        if(cardType == VICTORY_POINT)
+        {
+            cout << "You have received a victory point! from a Victory Point card." << endl;
+            this->addVictoryPoints(1);
+            return VICTORY_POINT;
+        }
+        if(cardType == KNIGHT)
+        {
+            if(this->getDevCards()[3].second == 3)
+            {
+                cout << "You just got your third knight card\n Youy have received the big army card! received 2 victory points." << endl;
+                this->addVictoryPoints(2);
+                return KNIGHT;
+            }
+        }
+        return cardType;
     }
     return -1;
 }
 
 int catan::Player::playDevCard(Catan *game)
 {
-    if(this->devCards[0].first == nullptr && this->devCards[1].first == nullptr && this->devCards[2].first == nullptr && this->devCards[3].first == nullptr && this->devCards[4].first == nullptr)
+    if(this->devCards[0].first == nullptr && this->devCards[1].first == nullptr && this->devCards[2].first == nullptr)
     {
         cout << "You have no development cards to play." << endl;
         return -1;
@@ -425,14 +453,14 @@ int catan::Player::playDevCard(Catan *game)
         cout << "Invalid card type, please try again." << endl;
         return -1;
     }
-    if(this->devCards[cardType].first == nullptr)
+    if(this->devCards[(size_t)cardType].first == nullptr)
     {
         cout << "You do not have this development card." << endl;
         return -1;
     }
-    dynamic_cast<PromotionCard *>(this->devCards[cardType].first)->useCard(game, this);
+    dynamic_cast<PromotionCard *>(this->devCards[(size_t)cardType].first)->useCard(game, this);
     
-    this->removeDevCard(this->devCards[cardType].first);
+    this->removeDevCard(this->devCards[(size_t)cardType].first);
     return 0;
 }
 
@@ -440,20 +468,33 @@ void catan::Player::addDevCard(catan::Card* card)
 {
     if(this->devCards[card->getType()].first == nullptr)
     {
-        this->devCards[card->getType()] = make_pair(card->clone(), 1);
+        this->devCards[card->getType()] = make_pair(card, 1);
         return;
     }
+    this->devCards[card->getType()].second++;
 }
 
 void catan::Player::removeDevCard(catan::Card* card)
 {
-    if(this->devCards[card->getType()].first != nullptr)
+    size_t cardType = (size_t)card->getType();
+    if(this->devCards[cardType].first != nullptr)
     {
-        this->devCards[card->getType()].second--;
-        if(this->devCards[card->getType()].second == 0)
+        if(cardType == VICTORY_POINT)
         {
-            delete this->devCards[card->getType()].first;
-            this->devCards[card->getType()].first = nullptr;
+            this->addVictoryPoints(-1);
+        }
+        if(cardType == KNIGHT)
+        {
+            if(this->getDevCards()[3].second == 3)
+            {
+                this->addVictoryPoints(-2);
+            }
+        }
+        this->devCards[cardType].second--;
+        if(this->devCards[cardType].second == 0)
+        {
+            delete this->devCards[cardType].first;
+            this->devCards[cardType].first = nullptr;
         }
     }
 }
@@ -472,6 +513,10 @@ void catan::Player::displayDevCards() const
 
 int catan::Player::trade(catan::Catan *game)
 {
+    vector<int> giveRes (5, 0);
+    vector<int> recvRes (5, 0);
+    vector<int> giveCards (5, 0);
+    vector<int> recvCards (5, 0);
     cout << "Enter the number of the player you wish to trade with:" << endl;
     for(size_t i = 0; i < game->getPlayers().size(); i++)
     {
@@ -481,47 +526,101 @@ int catan::Player::trade(catan::Catan *game)
         }
     }
     int playerNum;
-    cin >> playerNum;
-    if(playerNum < 0 || playerNum >= game->getPlayers().size() || game->getPlayers()[playerNum] == this)
+    while(true)
     {
-        cout << "Invalid player number, please try again." << endl;
-        return -1;
+        cin >> playerNum;
+        if(playerNum < 0 || playerNum >= game->getPlayers().size() || game->getPlayers()[(size_t)playerNum] == this)
+        {
+            cout << "Invalid player number, please try again." << endl;
+            return -1;
+        }
+        cout << "Enter the resource you wish to give:" << endl;
+        cout << "0 = BRICK, 1 = WOOD, 2 = WHEAT, 3 = WOOL, 4 = IRON 5 = NONE" << endl;
+        int giveResType;
+        cin >> giveResType;
+        if(giveResType < 0 || giveResType > 5)
+        {
+            cout << "Invalid resource number, please try again." << endl;
+            continue;;
+        }
+        cout << "Enter the amount of the resource you wish to give:" << endl;
+        int giveAmount;
+        cin >> giveAmount;
+        if(giveAmount < 0 || giveAmount > this->resources[giveResType])
+        {
+            cout << "Invalid amount, please try again." << endl;
+            continue;
+        }
+        cout << "Do you wish to give a card" << endl;
+        cout << "0 = MONOPOLY, 1 = ROAD_BUILDING, 2 = YEAR_OF_PLENTY, 3 = KNIGHT, 4 = VICTORY_POINT, 5 = NONE" << endl;
+        int cardType;
+        cin >> cardType;
+        if(cardType < 0 || cardType > 5)
+        {
+            if(cardType == 5)
+            {
+                break;
+            }
+            cout << "Invalid card type, please try again." << endl;
+            continue;
+        }
+        cout << "How many cards do you wish to give?" << endl;
+        int cardAmount;
+        cin >> cardAmount;
+        if(cardAmount < 0 || cardAmount > this->devCards[(size_t)cardType].second)
+        {
+            cout << "Invalid amount, please try again." << endl;
+            continue;
+        }
+        giveRes[(size_t)giveResType] = giveAmount;
+        giveCards[(size_t)cardType] = cardAmount;
     }
-    cout << "Enter the resource you wish to give:" << endl;
-    cout << "0 = BRICK, 1 = WOOD, 2 = WHEAT, 3 = WOOL, 4 = IRON" << endl;
-    int giveRes;
-    cin >> giveRes;
-    if(giveRes < 0 || giveRes > 4)
+    
+    while(true)
     {
-        cout << "Invalid resource number, please try again." << endl;
-        return -1;
+        cout << "Enter the resource you wish to receive:" << endl;
+        cout << "0 = BRICK, 1 = WOOD, 2 = WHEAT, 3 = WOOL, 4 = IRON 5 = NONE" << endl;
+        int recvResType;
+        cin >> recvResType;
+        if(recvResType < 0 || recvResType > 5)
+        {
+            cout << "Invalid resource number, please try again." << endl;
+            continue;
+        }
+        cout << "Enter the amount of the resource you wish to receive:" << endl;
+        int recvAmount;
+        cin >> recvAmount;
+        if(recvAmount < 0)
+        {
+            cout << "Invalid amount, please try again." << endl;
+            continue;
+        }
+        cout << "Do you wish to receive a card" << endl;
+        cout << "0 = MONOPOLY, 1 = ROAD_BUILDING, 2 = YEAR_OF_PLENTY, 3 = KNIGHT, 4 = VICTORY_POINT, 5 = NONE" << endl;
+        int cardType;
+        cin >> cardType;
+        if(cardType < 0 || cardType > 5)
+        {
+            if(cardType == 5)
+            {
+                break;
+            }
+            cout << "Invalid card type, please try again." << endl;
+            continue;
+        }
+        cout << "How many cards do you wish to receive?" << endl;
+        int cardAmount;
+        cin >> cardAmount;
+        if(cardAmount < 0)
+        {
+            cout << "Invalid amount, please try again." << endl;
+            continue;
+        }
+        recvRes[(size_t)recvResType] = recvAmount;
+        recvCards[(size_t)cardType] = cardAmount;
     }
-    cout << "Enter the amount of the resource you wish to give:" << endl;
-    int giveAmount;
-    cin >> giveAmount;
-    if(giveAmount < 0 || giveAmount > this->resources[giveRes])
-    {
-        cout << "Invalid amount, please try again." << endl;
-        return -1;
-    }
-    cout << "Enter the resource you wish to receive:" << endl;
-    cout << "0 = BRICK, 1 = WOOD, 2 = WHEAT, 3 = WOOL, 4 = IRON" << endl;
-    int recvRes;
-    cin >> recvRes;
-    if(recvRes < 0 || recvRes > 4)
-    {
-        cout << "Invalid resource number, please try again." << endl;
-        return -1;
-    }
-    cout << "Enter the amount of the resource you wish to receive:" << endl;
-    int recvAmount;
-    cin >> recvAmount;
-    if(recvAmount < 0)
-    {
-        cout << "Invalid amount, please try again." << endl;
-        return -1;
-    }
-    if(game->trade(this, game->getPlayers()[playerNum], giveRes, giveAmount, recvRes, recvAmount) == 0)
+
+    if(game->trade(this, game->getPlayers()[(size_t)playerNum], giveRes, recvRes, giveCards, recvCards) == 0)
     {
         return 0;
     }

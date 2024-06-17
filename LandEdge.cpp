@@ -17,18 +17,6 @@ catan::LandEdge::~LandEdge()
 {
 }
 
-catan::LandEdge::LandEdge(const LandEdge& other)
-{
-    this->id = other.id;
-    this->owner = other.owner;
-    this->vertices.first = other.vertices.first;
-    this->vertices.second = other.vertices.second;
-    for(size_t i = 0; i < other.adjEdges.size(); i++)
-    {
-        this->adjEdges.push_back(other.adjEdges[i]);
-    }
-}
-
 void catan::LandEdge::placeRoad(Player* player)
 {
     this->setOwner(player);
@@ -51,28 +39,6 @@ bool catan::LandEdge::roadValid(Player* player) const
         return true;
     }
     return false;
-}
-
-catan::LandEdge& catan::LandEdge::operator=(const LandEdge& other)
-{
-    // if(this == &other)
-    // {
-    //     return *this;
-    // }
-    this->id = other.id;
-    this->owner = other.owner;
-    this->vertices.first = other.vertices.first;
-    this->vertices.second = other.vertices.second;
-    // for(size_t i = 0; i < this->adjEdges.size(); i++)
-    // {
-        // if(this->adjEdges[i] != nullptr){delete this->adjEdges[i];}
-    // }
-    this->adjEdges.clear();
-    for(size_t i = 0; i < other.adjEdges.size(); i++)
-    {
-        this->adjEdges.push_back(other.adjEdges[i]);
-    }
-    return *this;
 }
 
 void catan::LandEdge::setVertices(LandVertex* vertex0, LandVertex* vertex1)

@@ -17,6 +17,8 @@ using std::pair;
 using std::cin;
 using std::make_pair;
 
+#include <sstream>
+
 #include <algorithm>
 
 #include <ctime>
@@ -106,6 +108,8 @@ namespace catan
              * @return The player that won the game. 
             **/
             Player* start();
+
+            Player* start(string inp);
 
             /** 
              * @brief Roll 2 fair dices, return the sum.

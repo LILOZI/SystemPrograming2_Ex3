@@ -39,8 +39,8 @@ int catan::Player::placeSettlement(Catan* game, bool round0)
 
     while(true)
     {
-        cout << "Enter 102 at any stage to leave this process." << endl;
-        cout << "Enter the number of the land you want to place your settlement on: ";
+        // cout << "Enter 102 at any stage to leave this process." << endl;
+        // cout << "Enter the number of the land you want to place your settlement on: ";
         size_t landNum;
         cin >> landNum;
         if(landNum < 0 || landNum > 18)
@@ -55,7 +55,8 @@ int catan::Player::placeSettlement(Catan* game, bool round0)
                 cout << "Leaving settelment placement process." << endl;
                 return -1;
             }
-            cout << "Land number must be between 0 - 18, please try again." << endl;
+            cout << landNum << endl;
+            // cout << "Land number must be between 0 - 18, please try again." << endl;
             continue;
         }
         cout << "Enter the vertex index you want to place your settlement on: ";
@@ -323,7 +324,7 @@ void catan::Player::playTurn(Catan *game)
     while(true)
     {
         cout << "Enter your move:"<< endl;
-        cout << "   Press 1 to rool the dice." << endl;
+        cout << "   Press 1 to roll the dice." << endl;
         cout << "   Press 2 to use a development card." << endl;
         cout << "   Press C to display development cards." << endl;
         cout << "   Press R to display resources." << endl;
@@ -348,7 +349,8 @@ void catan::Player::playTurn(Catan *game)
                 cout << "Victory Points: " << this->getVictoryPoints() << endl;
                 break;
             default:
-                cout << "You must first rool the dice or use a development card!" << endl;
+                cout << op << endl;
+                cout << "You must first roll the dice or use a development card!" << endl;
         }
         if(rolled) {break;}
     }
@@ -364,6 +366,7 @@ void catan::Player::playTurn(Catan *game)
         cout << "   Press B to display board." << endl;
         cout << "   Press R to display resources." << endl;
         cout << "   Press V to display victory points." << endl;
+        cout << "   Press E to end your turn." << endl;
         cin >> op;
         switch(op)
         {
@@ -400,6 +403,8 @@ void catan::Player::playTurn(Catan *game)
             case 'V':
                 cout << "Victory Points: " << this->getVictoryPoints() << endl;
                 break;
+            case 'E':
+                return;
             default:
                 cout << "Invalid move, please try again." << endl;
         }

@@ -34,7 +34,7 @@ LandEdge.o : LandEdge.cpp LandEdge.hpp
 main.o: main.cpp
 	$(CXX) $(CXXFLAGS) -c main.cpp
 
-valgrind: Catan
+valgrind: Catan test
 	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./Catan 2>&1 | { egrep "lost| at " || true; }
 	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test 2>&1 | { egrep "lost| at " || true; }
 

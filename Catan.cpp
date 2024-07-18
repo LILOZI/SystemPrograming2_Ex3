@@ -688,6 +688,26 @@ catan::Player* catan::Catan::start()
     return winner;
 }
 
+catan::Player* catan::Catan::start(string inp)
+{
+    std::streambuf* orig = cin.rdbuf();
+    std::istringstream input(inp);
+    cin.rdbuf(input.rdbuf());
+    
+    this->playRound0();
+    Player* winner = nullptr;
+    playTurn();
+    playTurn();
+    playTurn();
+    cin.rdbuf(orig);  
+    while((winner = isGameOver()) == nullptr)
+    {
+        playTurn();
+    }
+    cout << winner->getName() << " has won the game!" << endl;
+    return winner;
+}
+
 int catan::Catan::trade(Player* sender, Player *receiver, vector<int> giveResources, vector<int> recvResources, vector<int> giveCard, vector<int> recvCard)
 {
     cout << sender->getName() << " wants to trade " << endl;
